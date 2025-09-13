@@ -42,12 +42,13 @@ const Button: React.FC<
 );
 
 export default function RunsPage() {
-  // const { data } = useQuery({
-  //   queryKey: ["runs"],
-  //   queryFn: getRuns,
-  //   staleTime: 60 * 1000,
-  //   gcTime: 300 * 1000,
-  // });
+  const { data } = useQuery({
+    queryKey: ["runs"],
+    queryFn: getRuns,
+    staleTime: 60 * 1000,
+    gcTime: 300 * 1000,
+  });
+  console.log(data, "!!");
   const [runs, setRuns] = useState<Run[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -175,10 +176,10 @@ export default function RunsPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {runs.map((r) => (
+                  {data?.items.map((r) => (
                     <tr key={r.id}>
                       <td>{r.runAtText ?? r.runAt}</td>
-                      <td>{r.distanceKm.toFixed(2)}</td>
+                      <td>{r.distance.toFixed(2)}</td>
                       <td>{r.durationSec}</td>
                       <td>{r.pacePerKm ?? "-"}</td>
                       <td>{r.note ?? ""}</td>
