@@ -7,6 +7,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as s from "./runs.css";
 import { useEffect, useState } from "react";
+import dayjs from "dayjs";
 
 const HMS_RE = /^(?:[0-1]\d|2[0-3]):[0-5]\d:[0-5]\d$/;
 const YMDHM_RE =
@@ -65,7 +66,7 @@ export default function RunsPage() {
     }
   };
   useEffect(() => {
-    reload(); /* eslint-disable-next-line */
+    // reload(); /* eslint-disable-next-line */
   }, [page, limit]);
 
   const {
@@ -178,9 +179,12 @@ export default function RunsPage() {
                 <tbody>
                   {data?.items.map((r) => (
                     <tr key={r.id}>
-                      <td>{r.runAtText ?? r.runAt}</td>
+                      <td>
+                        {r.runAtText ??
+                          dayjs(r.runAt).format("YYYY-MM-DD hh:mm")}
+                      </td>
                       <td>{r.distance.toFixed(2)}</td>
-                      <td>{r.durationSec}</td>
+                      <td>{r.durationText}</td>
                       <td>{r.pacePerKm ?? "-"}</td>
                       <td>{r.note ?? ""}</td>
                       <td>

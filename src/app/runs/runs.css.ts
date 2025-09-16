@@ -86,12 +86,13 @@ export const table = style({
 });
 
 globalStyle(`${table} th`, {
-  textAlign: "left",
+  textAlign: "center",
   color: "#64748b",
   borderBottom: "1px solid #e2e8f0",
   padding: "8px 8px",
 });
 globalStyle(`${table} td`, {
+  textAlign: "center",
   borderBottom: "1px solid #f1f5f9",
   padding: "8px 8px",
 });
