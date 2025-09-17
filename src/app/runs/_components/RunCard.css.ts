@@ -24,10 +24,23 @@ export const inner = style({
 });
 
 export const headRow = style({
+  display: "flex",
+  justifyContent: "space-between",
+});
+
+export const headRowLeft = style({
   display: "grid",
   gridTemplateColumns: "64px 1fr",
   columnGap: "12px",
   alignItems: "center",
+});
+
+export const headRowRight = style({
+  position: "relative",
+});
+
+export const dots = style({
+  cursor: "pointer",
 });
 
 export const thumb = style({
@@ -77,31 +90,59 @@ export const label = style({
   color: "#6b7280",
 });
 
-export const divider = style({
-  height: 1,
-  background: "#f1f5f9",
-  margin: "12px 0 4px",
+export const menu = style({
+  position: "absolute",
+  top: "18px",
+  right: 0,
+  minWidth: 140,
+  padding: 6,
+  borderRadius: 12,
+  background: "#ffffff",
+  border: "1px solid #e5e7eb",
+  boxShadow: "0 10px 30px rgba(0,0,0,.12)",
+  opacity: 0,
+  transform: "translateY(-4px)",
+  pointerEvents: "none",
+  transition: "opacity .15s ease, transform .15s ease",
+  zIndex: 20,
   "@media": {
     "(prefers-color-scheme: dark)": {
-      background: "#334155",
+      background: "rgba(17,24,39,0.95)",
+      border: "1px solid #374151",
     },
   },
 });
 
-export const footer = style({
+export const menuOpen = style({
+  opacity: 1,
+  transform: "translateY(0)",
+  pointerEvents: "auto",
+});
+
+export const item = style({
+  width: "100%",
   display: "flex",
   alignItems: "center",
   gap: 8,
-  padding: "0 16px 12px 16px",
+  padding: "10px 10px",
+  borderRadius: 8,
+  fontSize: 14,
+  lineHeight: 1.1,
+  color: "#111827",
+  background: "transparent",
+  border: "none",
+  cursor: "pointer",
+  textAlign: "left",
+  selectors: {
+    "&:hover": { background: "#f3f4f6" },
+    "&:focus-visible": { outline: "2px solid #60a5fa", outlineOffset: 2 },
+  },
+  "@media": {
+    "(prefers-color-scheme: dark)": {
+      color: "#e5e7eb",
+      selectors: { "&:hover": { background: "rgba(255,255,255,0.10)" } },
+    },
+  },
 });
 
-export const badge = style({
-  width: 28,
-  height: 28,
-  borderRadius: 8,
-  background: "#111827",
-  display: "inline-flex",
-  alignItems: "center",
-  justifyContent: "center",
-  overflow: "hidden",
-});
+export const itemIcon = style({ width: 16, height: 16 });
