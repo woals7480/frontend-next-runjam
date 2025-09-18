@@ -2,7 +2,9 @@
 "use client";
 
 import React from "react";
-import ReactModal from "react-modal";
+import Modal from "react-modal";
+import * as s from "./ConfirmModal.css";
+import clsx from "clsx";
 
 type ConfirmModalProps = {
   isOpen: boolean;
@@ -12,9 +14,10 @@ type ConfirmModalProps = {
   description?: string;
   confirmLabel?: string;
   cancelLabel?: string;
-  // 스타일을 외부에서 주입할 수 있게(예: vanilla-extract 클래스)
   contentClassName?: string;
   overlayClassName?: string;
+  confirmButtonClassName?: string;
+  cancelButtonClassName?: string;
 };
 
 export default function ConfirmModal({
@@ -27,37 +30,40 @@ export default function ConfirmModal({
   cancelLabel = "취소",
   contentClassName,
   overlayClassName,
+  confirmButtonClassName,
+  cancelButtonClassName,
 }: ConfirmModalProps) {
   return (
-    <ReactModal
+    <Modal
       isOpen={isOpen}
       onRequestClose={onCancel}
       shouldCloseOnOverlayClick
       aria={{ labelledby: "confirm-modal-title" }}
-      className={contentClassName}
-      overlayClassName={overlayClassName}
+      className={clsx(s.content, contentClassName)}
+      overlayClassName={clsx(s.overlay, overlayClassName)}
     >
-      <div style={{ padding: 20, minWidth: 300 }}>
-        <h4 id="confirm-modal-title" style={{ margin: 0 }}>
+      <div className={s.body}>
+        <h4 id="confirm-modal-title" className={s.title}>
           {title}
         </h4>
-        {description && <p style={{ marginTop: 12 }}>{description}</p>}
-        <div
-          style={{
-            marginTop: 16,
-            display: "flex",
-            gap: 8,
-            justifyContent: "flex-end",
-          }}
-        >
-          <button type="button" onClick={onCancel}>
+        {description && <p className={s.description}>{description}</p>}
+        <div className={s.actions}>
+          <button
+            type="button"
+            onClick={onCancel}
+            className={clsx(s.btn, cancelButtonClassName)}
+          >
             {cancelLabel}
           </button>
-          <button type="button" onClick={onConfirm}>
+          <button
+            type="button"
+            onClick={onConfirm}
+            className={clsx(s.btn, s.btnPrimary, confirmButtonClassName)}
+          >
             {confirmLabel}
           </button>
         </div>
       </div>
-    </ReactModal>
+    </Modal>
   );
 }

@@ -14,7 +14,6 @@ import clsx from "clsx";
 import type {} from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteRun } from "../_lib/deleteRun";
-import Modal from "react-modal";
 import ConfirmModal from "@/app/_components/ConfirmModal";
 
 type Props = {
@@ -74,20 +73,6 @@ export default function RunCrad({ run }: Props) {
 
   return (
     <article className={s.card}>
-      {/* <Modal
-        isOpen={isOpen}
-        className={s.modalContent}
-        shouldCloseOnOverlayClick
-        onRequestClose={closeModal}
-      >
-        <div>
-          <h4>달리기 기록을 삭제하시겠습니까 ?</h4>
-        </div>
-        <div>
-          <button onClick={() => setIsOpen(false)}>취소</button>
-          <button onClick={onClickDeleteRun}>삭제</button>
-        </div>
-      </Modal> */}
       <ConfirmModal
         isOpen={isOpen}
         onCancel={closeModal}
@@ -96,7 +81,7 @@ export default function RunCrad({ run }: Props) {
         description="이 작업은 되돌릴 수 없어요. 삭제하시겠습니까?"
         confirmLabel="삭제"
         cancelLabel="취소"
-        contentClassName={s.modalContent} // 기존 스타일 계속 사용
+        contentClassName={s.modalContent}
         overlayClassName={s.modalOverlay}
       />
       <div className={s.inner}>

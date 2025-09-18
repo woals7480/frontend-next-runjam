@@ -6,10 +6,22 @@ export const mainWrapper = style({
   padding: "20px 16px 40px",
 });
 
+export const sectionHeader = style({
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+});
+
 export const sectionTitle = style({
   fontSize: 20,
   fontWeight: 800,
   margin: "8px 0 14px",
+});
+
+export const plusBtn = style({
+  border: "none",
+  backgroundColor: "inherit",
+  cursor: "pointer",
 });
 
 export const list = style({
