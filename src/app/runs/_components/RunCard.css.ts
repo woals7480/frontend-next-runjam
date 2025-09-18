@@ -146,3 +146,23 @@ export const item = style({
 });
 
 export const itemIcon = style({ width: 16, height: 16 });
+
+export const modalOverlay = style({
+  inset: 0,
+  position: "fixed",
+  background: "rgba(0,0,0,.45)",
+});
+
+export const modalContent = style({
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  borderRadius: "8px",
+  overflow: "hidden",
+  outline: "none",
+  background: "white",
+  minWidth: "400px",
+  boxShadow: "0 10px 30px rgba(0,0,0,.2)",
+  padding: "16px",
+});
