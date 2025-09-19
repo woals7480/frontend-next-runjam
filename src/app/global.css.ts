@@ -36,6 +36,10 @@ globalStyle("body", {
   MozOsxFontSmoothing: "grayscale",
 });
 
+globalStyle("input, textarea", {
+  fontFamily: 'var(--font-pretendard), "Malgun Gothic", sans-serif',
+});
+
 // 리셋류
 globalStyle("*", { boxSizing: "border-box", padding: 0, margin: 0 });
 

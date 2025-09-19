@@ -1,8 +1,8 @@
 import { RunPayload } from "../_components/RunFormModal";
 
-export async function createRun(body: RunPayload) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/run`, {
-    method: "post",
+export async function updateRun(id: string, body: RunPayload) {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/run/${id}`, {
+    method: "PATCH",
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
@@ -13,7 +13,7 @@ export async function createRun(body: RunPayload) {
   const data = await res.json();
 
   if (!res.ok) {
-    throw new Error(data?.message ?? "달리기기록 등록에 실패하였습니다.");
+    throw new Error(data?.message ?? "달리기기록 수정에 실패하였습니다.");
   }
 
   return data;

@@ -8,27 +8,29 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import clsx from "clsx";
 
-// 폼 스키마 (요구 포맷에 맞춤)
-// - runAt: "YYYY-MM-DDTHH:mm" (input: datetime-local) → 전송 시 "YYYY-MM-DD HH:mm"으로 변환
-// - distance: "NNN.nn" (문자열) 0.01~999.99, 소수 2자리까지 허용
-// - duration: "HH:MM:SS"
-// - note: 문자열(선택)
+// ── 공용 스키마/타입 ───────────────────────────────────────────────────────────
 const formSchema = z.object({
+  // input: "YYYY-MM-DDTHH:mm"
   runAt: z
     .string()
     .min(1, "달린 날짜/시간을 입력해주세요.")
     .refine((v) => /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(v), {
       message: "형식이 올바르지 않습니다. (예: 2025-09-05T12:23)",
     }),
+  // 문자열로 유지 (백엔드가 "30.3"을 기대)
   distance: z
     .string()
     .min(1, "거리(Km)를 입력해주세요.")
     .refine((v) => /^(\d{1,3})(\.\d{1,2})?$/.test(v), {
       message: "0.01 ~ 999.99 사이의 숫자(소수점 2자리)로 입력해주세요.",
     })
-    .refine((v) => parseFloat(v) >= 0.01 && parseFloat(v) <= 999.99, {
-      message: "0.01 ~ 999.99 사이로 입력해주세요.",
-    }),
+    .refine(
+      (v) => {
+        const n = parseFloat(v);
+        return !Number.isNaN(n) && n >= 0.01 && n <= 999.99;
+      },
+      { message: "0.01 ~ 999.99 사이로 입력해주세요." }
+    ),
   duration: z
     .string()
     .min(1, "시간을 입력해주세요.")
@@ -40,36 +42,73 @@ const formSchema = z.object({
 
 export type RunFormValues = z.infer<typeof formSchema>;
 
-// 백엔드로 보낼 최종 페이로드 타입
-export type CreateRunPayload = {
+// API에 보낼 페이로드 (등록/수정 공용)
+export type RunPayload = {
   runAt: string; // "YYYY-MM-DD HH:mm"
-  distance: string; // "30.3" 같은 문자열
+  distance: string; // "30.3"
   duration: string; // "HH:MM:SS"
   note?: string;
 };
 
-function toApiPayload(values: RunFormValues): CreateRunPayload {
-  // "YYYY-MM-DDTHH:mm" → "YYYY-MM-DD HH:mm"
-  const runAt = values.runAt.replace("T", " ");
-  return { ...values, runAt };
+// ── 포맷 변환 유틸 ────────────────────────────────────────────────────────────
+// input(datetime-local) → API ("YYYY-MM-DD HH:mm")
+function toApiRunAt(inputValue: string) {
+  // "2025-09-05T12:23" → "2025-09-05 12:23"
+  return inputValue.replace("T", " ");
 }
 
+// API/엔티티의 runAt → input(datetime-local)
+function toInputRunAt(apiValue: string) {
+  // 가장 흔한 포맷: "2025-09-05 12:23"
+  if (/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}/.test(apiValue)) {
+    return apiValue.replace(" ", "T").slice(0, 16);
+  }
+  // 혹시 ISO가 온다면(예: "2025-09-05T12:23:00Z") 대략 처리
+  if (apiValue.includes("T")) {
+    return apiValue.slice(0, 16);
+  }
+  return "";
+}
+
+// ── 컴포넌트 ─────────────────────────────────────────────────────────────────
 type Props = {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (payload: CreateRunPayload) => Promise<void> | void; // react-query mutate 호출 등
-  defaultValues?: Partial<RunFormValues>;
-  submitting?: boolean; // 외부에서 로딩 표시 제어하고 싶을 때
+
+  /** create | edit */
+  mode: "create" | "edit";
+
+  /** 등록 시 호출 */
+  onCreate?: (payload: RunPayload) => Promise<void> | void;
+
+  /** 수정 시 호출 (id는 initial.id에서 가져감) */
+  onUpdate?: (id: string, payload: RunPayload) => Promise<void> | void;
+
+  /** 편집용 초기값 (API 포맷 runAt: "YYYY-MM-DD HH:mm" 권장) */
+  initial?: {
+    id: string;
+    runAt: string;
+    distance: string;
+    duration: string;
+    note?: string;
+  };
+
+  /** 외부 로딩상태 바인딩 (react-query isPending 등) */
+  submitting?: boolean;
+
+  /** 모달 타이틀 커스터마이즈 */
   title?: string;
 };
 
 export default function RunFormModal({
   isOpen,
   onClose,
-  onSubmit,
-  defaultValues,
+  mode,
+  onCreate,
+  onUpdate,
+  initial,
   submitting,
-  title = "달리기 기록 등록",
+  title,
 }: Props) {
   const {
     register,
@@ -79,18 +118,41 @@ export default function RunFormModal({
   } = useForm<RunFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      runAt: "", // datetime-local용 기본값 (예: "2025-09-05T12:23")
-      distance: "",
-      duration: "",
-      note: "",
-      ...defaultValues,
+      runAt: initial?.runAt ? toInputRunAt(initial.runAt) : "",
+      distance: initial?.distance ?? "",
+      duration: initial?.duration ?? "",
+      note: initial?.note ?? "",
+    },
+    values: {
+      runAt: initial?.runAt ? toInputRunAt(initial.runAt) : "",
+      distance: initial?.distance ?? "",
+      duration: initial?.duration ?? "",
+      note: initial?.note ?? "",
     },
   });
 
-  const submit = async (values: RunFormValues) => {
-    await onSubmit(toApiPayload(values));
-    reset(); // 성공 시 폼 초기화
-    onClose(); // 모달 닫기
+  const effectiveTitle =
+    title ?? (mode === "edit" ? "달리기 기록 수정" : "달리기 기록 등록");
+  const submitLabel = mode === "edit" ? "수정" : "등록";
+
+  const onSubmit = async (values: RunFormValues) => {
+    const payload: RunPayload = {
+      ...values,
+      runAt: toApiRunAt(values.runAt),
+    };
+
+    if (mode === "edit") {
+      if (!initial?.id) {
+        console.error("수정 모드에는 initial.id가 필요합니다.");
+        return;
+      }
+      await onUpdate?.(initial.id, payload);
+    } else {
+      await onCreate?.(payload);
+    }
+
+    reset();
+    onClose();
   };
 
   return (
@@ -103,16 +165,16 @@ export default function RunFormModal({
       overlayClassName={s.overlay}
     >
       <div className={s.header} id="run-form-title">
-        {title}
+        {effectiveTitle}
       </div>
 
-      <form className={s.body} onSubmit={handleSubmit(submit)}>
+      <form className={s.body} onSubmit={handleSubmit(onSubmit)}>
         {/* runAt */}
         <div className={s.row}>
           <label className={s.label}>달린 날짜/시간</label>
           <input
             type="datetime-local"
-            step="60" // 분 단위
+            step="60"
             className={s.input}
             placeholder="2025-09-05T12:23"
             {...register("runAt")}
@@ -169,7 +231,7 @@ export default function RunFormModal({
             className={clsx(s.btn, s.primary)}
             disabled={submitting || isSubmitting}
           >
-            {submitting || isSubmitting ? "등록 중..." : "등록"}
+            {submitting || isSubmitting ? `${submitLabel} 중...` : submitLabel}
           </button>
         </div>
       </form>

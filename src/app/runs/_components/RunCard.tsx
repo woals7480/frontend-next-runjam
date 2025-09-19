@@ -15,6 +15,8 @@ import type {} from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteRun } from "../_lib/deleteRun";
 import ConfirmModal from "@/app/_components/ConfirmModal";
+import RunFormModal, { RunPayload } from "./RunFormModal";
+import { updateRun } from "../_lib/updateRun";
 
 type Props = {
   run: Run;
@@ -25,6 +27,7 @@ export default function RunCrad({ run }: Props) {
   const menuRef = useRef<HTMLDivElement>(null);
   const queryClient = useQueryClient();
   const [isOpen, setIsOpen] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
 
   const onClickdots = (e: ReactMouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
@@ -43,6 +46,24 @@ export default function RunCrad({ run }: Props) {
       console.log(error);
     },
   });
+
+  const updateMutation = useMutation({
+    mutationFn: ({ id, payload }: { id: string; payload: RunPayload }) =>
+      updateRun(id, payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["runs"],
+      });
+      console.log("성공");
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+
+  const handleSubmit = (id: string, payload: RunPayload) => {
+    updateMutation.mutate({ id: run.id, payload });
+  };
 
   const onClickDeleteRun = () => {
     deleteRuns.mutate(run.id);
@@ -84,6 +105,20 @@ export default function RunCrad({ run }: Props) {
         contentClassName={s.modalContent}
         overlayClassName={s.modalOverlay}
       />
+      <RunFormModal
+        isOpen={isEditOpen}
+        onClose={() => setIsEditOpen(false)}
+        mode="edit"
+        initial={{
+          id: run.id,
+          runAt: dayjs(run.runAt).format("YYYY-MM-DD HH:mm"),
+          distance: String(run.distance),
+          duration: run.durationText,
+          note: run.note ?? "",
+        }}
+        onUpdate={handleSubmit}
+        submitting={updateMutation.isPending}
+      />
       <div className={s.inner}>
         <div className={s.headRow}>
           <div className={s.headRowLeft}>
@@ -119,7 +154,7 @@ export default function RunCrad({ run }: Props) {
                 className={s.item}
                 onClick={() => {
                   setMenuOpen(false);
-                  openModal();
+                  setIsEditOpen(true);
                 }}
               >
                 <svg

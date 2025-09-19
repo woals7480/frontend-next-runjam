@@ -34,6 +34,9 @@ export default function Home() {
               <button className={ui.btn} onClick={() => router.push("/me")}>
                 내 정보
               </button>
+              <button className={ui.btn} onClick={() => router.push("/runs")}>
+                달리기 기록
+              </button>
               <button className={ui.btn} onClick={onLogout}>
                 로그아웃
               </button>

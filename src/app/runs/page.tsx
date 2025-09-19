@@ -5,7 +5,7 @@ import { getRuns } from "./_lib/getRuns";
 import RunCrad from "./_components/RunCard";
 import * as s from "./runs.css";
 import { Run, RunProps } from "@/model/Run";
-import RunFormModal, { CreateRunPayload } from "./_components/RunFormModal";
+import RunFormModal, { RunPayload } from "./_components/RunFormModal";
 import { useState } from "react";
 import { createRun } from "./_lib/createRun";
 
@@ -24,9 +24,12 @@ export default function RunsPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["runs"] });
     },
+    onError: (error) => {
+      console.log(error);
+    },
   });
 
-  const handleSubmit = (payload: CreateRunPayload) => {
+  const handleSubmit = (payload: RunPayload) => {
     mutation.mutate(payload);
   };
 
@@ -64,8 +67,9 @@ export default function RunsPage() {
       <RunFormModal
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
-        onSubmit={handleSubmit}
+        onCreate={handleSubmit}
         submitting={mutation.isPending}
+        mode="create"
       />
     </main>
   );

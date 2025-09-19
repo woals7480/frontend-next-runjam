@@ -133,7 +133,7 @@ export const primary = style({
   background: "#111827",
   color: "#fff",
   selectors: {
-    "&:hover": { filter: "brightness(1.05)" },
+    "&:hover": { filter: "brightness(1.05)", background: "#111622ff" },
     "&:active": { filter: "brightness(0.95)" },
   },
   "@media": {
