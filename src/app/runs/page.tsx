@@ -8,18 +8,23 @@ import { Run, RunProps } from "@/model/Run";
 import RunFormModal, { RunPayload } from "./_components/RunFormModal";
 import { useState } from "react";
 import { createRun } from "./_lib/createRun";
+import dayjs from "dayjs";
+import { updateRun } from "./_lib/updateRun";
+import LoadingSpinner from "../_components/LoadingSpinner";
 
 export default function RunsPage() {
   const queryClient = useQueryClient();
-  const { data } = useQuery<RunProps>({
+  const { data, status, fetchStatus, error } = useQuery<RunProps>({
     queryKey: ["runs"],
     queryFn: getRuns,
     staleTime: 300 * 1000,
     gcTime: 600 * 1000,
   });
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [mode, setMode] = useState<"create" | "edit">("create");
+  const [selectedRun, setSelectRun] = useState<Run | null>(null);
 
-  const mutation = useMutation({
+  const createMutation = useMutation({
     mutationFn: createRun,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["runs"] });
@@ -29,8 +34,38 @@ export default function RunsPage() {
     },
   });
 
-  const handleSubmit = (payload: RunPayload) => {
-    mutation.mutate(payload);
+  const updateMutation = useMutation({
+    mutationFn: ({ id, payload }: { id: string; payload: RunPayload }) =>
+      updateRun(id, payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["runs"],
+      });
+      console.log("성공");
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+
+  const handleCreateSubmit = (payload: RunPayload) => {
+    createMutation.mutate(payload);
+  };
+
+  const handleUpdateSubmit = (id: string, payload: RunPayload) => {
+    updateMutation.mutate({ id, payload });
+  };
+
+  const onEditOpen = (run: Run) => {
+    setIsOpen(true);
+    setMode("edit");
+    setSelectRun(run);
+  };
+
+  const onEditClose = () => {
+    setIsOpen(false);
+    setMode("create");
+    setSelectRun(null);
   };
 
   return (
@@ -55,22 +90,90 @@ export default function RunsPage() {
           </svg>
         </button>
       </div>
-      {data ? (
-        <div className={s.list}>
-          {data.items.map((run: Run) => (
-            <RunCrad run={run} key={run.id} />
-          ))}
+
+      {/* ✅ 최초 로딩 */}
+      {status === "pending" && (
+        <div className={s.centerBox} aria-busy="true">
+          <LoadingSpinner size={60} stroke={4} />
+          <p className={s.helperText}>달리기 활동을 불러오는 중…</p>
         </div>
-      ) : (
-        <div>달리기 활동을 불러오는데 실패했습니다.</div>
       )}
-      <RunFormModal
-        isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
-        onCreate={handleSubmit}
-        submitting={mutation.isPending}
-        mode="create"
-      />
+
+      {/* ✅ 에러 */}
+      {status === "error" && (
+        <div className={s.centerBox} role="alert">
+          <p>달리기 활동을 불러오지 못했습니다.</p>
+          <button
+            className={s.retryBtn}
+            onClick={() =>
+              queryClient.invalidateQueries({ queryKey: ["runs"] })
+            }
+          >
+            다시 시도
+          </button>
+          {/* 개발 중엔 에러 로그를 보고 싶으면 아래 주석 해제 */}
+          {/* <pre style={{ marginTop: 8 }}>{String((error as Error)?.message ?? error)}</pre> */}
+        </div>
+      )}
+
+      {/* ✅ 성공 + 빈 상태 */}
+      {status === "success" && data.items.length === 0 && (
+        <div className={s.centerBox}>
+          <p>아직 기록이 없어요. 첫 달리기를 추가해보세요!</p>
+          <button
+            className={s.plusBtn}
+            onClick={() => {
+              setMode("create");
+              setIsOpen(true);
+            }}
+          >
+            추가
+          </button>
+        </div>
+      )}
+
+      {/* ✅ 성공 + 목록 */}
+      {status === "success" && data.items.length > 0 && (
+        <>
+          {/* 백그라운드 refetch 중일 때 상단에 작은 인라인 스피너 */}
+          {fetchStatus === "fetching" && (
+            <div className={s.inlineFetching} role="status" aria-live="polite">
+              <LoadingSpinner size={16} stroke={2} />
+              <span className={s.inlineFetchingText}>최신화 중…</span>
+            </div>
+          )}
+
+          <div className={s.list}>
+            {data.items.map((run) => (
+              <RunCrad run={run} key={run.id} onOpen={onEditOpen} />
+            ))}
+          </div>
+        </>
+      )}
+      {mode === "edit" && selectedRun ? (
+        <RunFormModal
+          isOpen={isOpen}
+          onClose={onEditClose}
+          mode={mode}
+          initial={{
+            id: selectedRun.id,
+            runAt: dayjs(selectedRun.runAt).format("YYYY-MM-DD HH:mm"),
+            distance: String(selectedRun.distance),
+            duration: selectedRun.durationText,
+            note: selectedRun.note ?? "",
+          }}
+          onUpdate={handleUpdateSubmit}
+          submitting={updateMutation.isPending}
+        />
+      ) : (
+        <RunFormModal
+          isOpen={isOpen}
+          onClose={() => setIsOpen(false)}
+          onCreate={handleCreateSubmit}
+          submitting={createMutation.isPending}
+          mode={mode}
+        />
+      )}
     </main>
   );
 }
