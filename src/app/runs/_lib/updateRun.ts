@@ -1,9 +1,10 @@
+import { fetchWithRefresh } from "@/app/_lib/fetchWithRefresh";
 import { RunPayload } from "../_components/RunFormModal";
 
 export async function updateRun(id: string, body: RunPayload) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/run/${id}`, {
+  const url = `${process.env.NEXT_PUBLIC_API_URL}/run/${id}`;
+  const res = await fetchWithRefresh(url, {
     method: "PATCH",
-    credentials: "include",
     headers: {
       "Content-Type": "application/json",
     },

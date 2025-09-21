@@ -1,13 +1,15 @@
+import { fetchWithRefresh } from "@/app/_lib/fetchWithRefresh";
+
 type Props = {
   email: string;
   password: string;
 };
 
 export async function postLogin({ email, password }: Props) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
+  const url = `${process.env.NEXT_PUBLIC_API_URL}/auth/login`;
+  const res = await fetchWithRefresh(url, {
     method: "POST",
     headers: { "content-type": "application/json" },
-    credentials: "include",
     body: JSON.stringify({ email, password }),
   });
 

@@ -1,7 +1,9 @@
+import { fetchWithRefresh } from "@/app/_lib/fetchWithRefresh";
+
 export async function deleteRun(id: string) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/run/${id}`, {
+  const url = `${process.env.NEXT_PUBLIC_API_URL}/run/${id}`;
+  const res = await fetchWithRefresh(url, {
     method: "DELETE",
-    credentials: "include",
   });
 
   // 응답을 JSON으로 변환 (성공/실패 공통)

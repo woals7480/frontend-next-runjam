@@ -1,9 +1,11 @@
+import { fetchWithRefresh } from "@/app/_lib/fetchWithRefresh";
+
 export async function getUserMe() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/me`, {
+  const url = `${process.env.NEXT_PUBLIC_API_URL}/auth/me`;
+  const res = await fetchWithRefresh(url, {
     next: {
       tags: ["auth", "me"],
     },
-    credentials: "include",
   });
 
   // 응답을 JSON으로 변환 (성공/실패 공통)
