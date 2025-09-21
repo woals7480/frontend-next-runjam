@@ -1,4 +1,5 @@
 import { fetchWithRefresh } from "@/app/_lib/fetchWithRefresh";
+import toast from "react-hot-toast";
 
 export async function deleteRun(id: string) {
   const url = `${process.env.NEXT_PUBLIC_API_URL}/run/${id}`;
@@ -11,9 +12,8 @@ export async function deleteRun(id: string) {
 
   if (!res.ok) {
     // 서버에서 내려준 에러 메시지(data.message)를 우선적으로 사용
-    throw new Error(
-      data?.message ?? "로그인 실패. 이메일/비밀번호를 확인해주세요."
-    );
+    toast.error(data?.message ?? "달리기기록 삭제를 실패하였습니다.");
+    throw new Error(data?.message ?? "달리기기록 삭제를 실패하였습니다.");
   }
 
   return data;

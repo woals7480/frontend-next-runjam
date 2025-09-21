@@ -5,6 +5,7 @@ import "./global.css.ts";
 import { pretendard } from "@/font/font";
 import clsx from "clsx";
 import ModalSetup from "./_components/ModalSetup";
+import { Toaster } from "react-hot-toast";
 
 export default function RootLayout({
   children,
@@ -15,6 +16,7 @@ export default function RootLayout({
     <html lang="ko">
       <body className={clsx(pretendard.variable, appRoot)}>
         <ModalSetup />
+        <Toaster position="bottom-center" />
         <RQProvider>
           <div id="app-root">
             {/* <AuthSync /> */}

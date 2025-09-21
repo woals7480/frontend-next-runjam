@@ -14,7 +14,8 @@ export async function updateRun(id: string, body: RunPayload) {
   const data = await res.json();
 
   if (!res.ok) {
-    throw new Error(data?.message ?? "달리기기록 수정에 실패하였습니다.");
+    toast.error(data?.message ?? "달리기기록 수정을 실패하였습니다.");
+    throw new Error(data?.message ?? "달리기기록 수정을 실패하였습니다.");
   }
 
   return data;
