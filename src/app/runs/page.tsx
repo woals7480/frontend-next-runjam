@@ -1,29 +1,53 @@
 "use client";
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { getRuns } from "./_lib/getRuns";
 import RunCrad from "./_components/RunCard";
 import * as s from "./runs.css";
 import { Run, RunProps } from "@/model/Run";
 import RunFormModal, { RunPayload } from "./_components/RunFormModal";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createRun } from "./_lib/createRun";
 import dayjs from "dayjs";
 import { updateRun } from "./_lib/updateRun";
 import LoadingSpinner from "../_components/LoadingSpinner";
-import toast from "react-hot-toast";
+import { useInView } from "react-intersection-observer";
 
 export default function RunsPage() {
   const queryClient = useQueryClient();
-  const { data, status, fetchStatus, error } = useQuery<RunProps>({
+  const {
+    data,
+    status,
+    fetchStatus,
+    error,
+    isFetching,
+    hasNextPage,
+    fetchNextPage,
+  } = useInfiniteQuery<RunProps>({
     queryKey: ["runs"],
-    queryFn: getRuns,
+    queryFn: ({ pageParam }) =>
+      getRuns({ cursor: (pageParam as string | null) ?? null }),
+    initialPageParam: null as string | null,
+    getNextPageParam: (lastPage) => lastPage.pageInfo.nextCursor,
     staleTime: 300 * 1000,
     gcTime: 600 * 1000,
   });
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [mode, setMode] = useState<"create" | "edit">("create");
   const [selectedRun, setSelectRun] = useState<Run | null>(null);
+  const { ref, inView } = useInView({
+    threshold: 0,
+    delay: 0,
+  });
+
+  const runs = useMemo(
+    () => data?.pages.flatMap((page) => page.items) ?? [],
+    [data]
+  );
 
   const createMutation = useMutation({
     mutationFn: createRun,
@@ -68,6 +92,12 @@ export default function RunsPage() {
     setMode("create");
     setSelectRun(null);
   };
+
+  useEffect(() => {
+    if (inView && !isFetching && hasNextPage) {
+      fetchNextPage();
+    }
+  }, [inView, isFetching, hasNextPage, fetchNextPage]);
 
   return (
     <main className={s.mainWrapper}>
@@ -118,7 +148,7 @@ export default function RunsPage() {
       )}
 
       {/* ✅ 성공 + 빈 상태 */}
-      {status === "success" && data.items.length === 0 && (
+      {status === "success" && runs.length === 0 && (
         <div className={s.centerBox}>
           <p>아직 기록이 없어요. 첫 달리기를 추가해보세요!</p>
           <button
@@ -134,7 +164,7 @@ export default function RunsPage() {
       )}
 
       {/* ✅ 성공 + 목록 */}
-      {status === "success" && data.items.length > 0 && (
+      {status === "success" && runs.length > 0 && (
         <>
           {/* 백그라운드 refetch 중일 때 상단에 작은 인라인 스피너 */}
           {fetchStatus === "fetching" && (
@@ -145,12 +175,13 @@ export default function RunsPage() {
           )}
 
           <div className={s.list}>
-            {data.items.map((run) => (
+            {runs.map((run) => (
               <RunCrad run={run} key={run.id} onOpen={onEditOpen} />
             ))}
           </div>
         </>
       )}
+      <div ref={ref} style={{ height: 50 }} />
       {mode === "edit" && selectedRun ? (
         <RunFormModal
           isOpen={isOpen}

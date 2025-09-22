@@ -12,5 +12,10 @@ export interface Run {
 
 export interface RunProps {
   items: Run[];
+  pageInfo: {
+    hasNextPage: boolean;
+    nextCursor: string | null;
+    take: number;
+  };
   totalDistance: number;
 }

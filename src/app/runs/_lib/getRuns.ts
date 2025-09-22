@@ -1,8 +1,15 @@
 import { fetchWithRefresh } from "@/app/_lib/fetchWithRefresh";
 import toast from "react-hot-toast";
 
-export async function getRuns() {
-  const url = `${process.env.NEXT_PUBLIC_API_URL}/run`;
+type Props = {
+  cursor?: string | null;
+};
+
+export async function getRuns({ cursor }: Props) {
+  const api = process.env.NEXT_PUBLIC_API_URL!;
+  const url = new URL("/run", api);
+  if (cursor) url.searchParams.set("cursor", cursor);
+
   const res = await fetchWithRefresh(url, {
     next: { tags: ["runs"] },
     method: "GET",
