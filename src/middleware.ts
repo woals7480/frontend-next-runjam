@@ -4,8 +4,8 @@ import { NextRequest, NextResponse } from "next/server";
 export async function middleware(req: NextRequest) {
   const url = req.nextUrl;
   const isProd = process.env.NODE_ENV === "production";
-  const accessCookieName = process.env.COOKIE_NAME_AT;
-  const refreshCookieName = process.env.COOKIE_NAME_RT;
+  const accessCookieName = process.env.NEXT_PUBLIC_COOKIE_NAME_AT;
+  const refreshCookieName = process.env.NEXT_PUBLIC_COOKIE_NAME_RT;
   if (!(accessCookieName && refreshCookieName)) {
     const login = new URL("/login", url);
     login.searchParams.set("redirect", url.pathname + url.search);
