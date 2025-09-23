@@ -5,6 +5,7 @@ export interface Run {
   userId: string;
   runAt: Date;
   distance: number;
+  durationSec: number;
   note?: string;
   durationText: string;
   pacePerKm: string;

@@ -7,7 +7,6 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import clsx from "clsx";
-
 // ── 공용 스키마/타입 ───────────────────────────────────────────────────────────
 const formSchema = z.object({
   // input: "YYYY-MM-DDTHH:mm"
@@ -136,6 +135,10 @@ export default function RunFormModal({
   const submitLabel = mode === "edit" ? "수정" : "등록";
 
   const onSubmit = async (values: RunFormValues) => {
+    if (values.note?.length === 0) {
+      values.note = undefined; // 빈 문자열인 경우 note를 undefined로 설정하여 서버에 보내지 않도록 함
+    }
+
     const payload: RunPayload = {
       ...values,
       runAt: toApiRunAt(values.runAt),

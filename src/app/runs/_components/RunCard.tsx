@@ -97,7 +97,7 @@ export default function RunCrad({ run, onOpen }: Props) {
               </svg>
             </div>
             <div>
-              <h3 className={s.title}>{run.note}</h3>
+              <h3 className={s.title}>{run.note ?? "달리기 활동"}</h3>
               <p className={s.subtitle}>
                 {dayjs(run.runAt).format("YYYY-MM-DD hh:mm")}
               </p>

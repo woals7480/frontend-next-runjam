@@ -16,6 +16,7 @@ import dayjs from "dayjs";
 import { updateRun } from "./_lib/updateRun";
 import LoadingSpinner from "../_components/LoadingSpinner";
 import { useInView } from "react-intersection-observer";
+import { secondsToHHMMSS } from "@/utils/time";
 
 export default function RunsPage() {
   const queryClient = useQueryClient();
@@ -191,7 +192,7 @@ export default function RunsPage() {
             id: selectedRun.id,
             runAt: dayjs(selectedRun.runAt).format("YYYY-MM-DD HH:mm"),
             distance: String(selectedRun.distance),
-            duration: selectedRun.durationText,
+            duration: secondsToHHMMSS(selectedRun.durationSec),
             note: selectedRun.note ?? "",
           }}
           onUpdate={handleUpdateSubmit}
