@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  InfiniteData,
   useInfiniteQuery,
   useMutation,
   useQueryClient,
@@ -11,7 +10,7 @@ import RunCrad from "./_components/RunCard";
 import * as s from "./runs.css";
 import { Run, RunProps } from "@/model/Run";
 import RunFormModal, { RunPayload } from "./_components/RunFormModal";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { createRun } from "./_lib/createRun";
 import dayjs from "dayjs";
 import { updateRun } from "./_lib/updateRun";
