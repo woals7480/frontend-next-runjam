@@ -9,7 +9,7 @@ import { getRuns } from "./_lib/getRuns";
 import RunCrad from "./_components/RunCard";
 import * as s from "./runs.css";
 import { Run, RunProps } from "@/model/Run";
-import RunFormModal, { RunPayload } from "./_components/RunFormModal";
+import RunFormModal from "./_components/RunFormModal";
 import { useEffect, useState } from "react";
 import { createRun } from "./_lib/createRun";
 import dayjs from "dayjs";
@@ -17,6 +17,7 @@ import { updateRun } from "./_lib/updateRun";
 import LoadingSpinner from "../_components/LoadingSpinner";
 import { useInView } from "react-intersection-observer";
 import { secondsToHHMMSS } from "@/utils/time";
+import { RunPayload } from "./_types/runForm";
 
 export default function RunsPage() {
   const queryClient = useQueryClient();
