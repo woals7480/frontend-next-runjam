@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  InfiniteData,
   useInfiniteQuery,
   useMutation,
   useQueryClient,
@@ -21,21 +22,21 @@ import { secondsToHHMMSS } from "@/utils/time";
 export default function RunsPage() {
   const queryClient = useQueryClient();
   const {
-    data,
+    data: runs = [],
     status,
     fetchStatus,
     error,
     isFetching,
     hasNextPage,
     fetchNextPage,
-  } = useInfiniteQuery<RunProps>({
+  } = useInfiniteQuery<RunProps, Error, Run[], ["runs"], string | null>({
     queryKey: ["runs"],
-    queryFn: ({ pageParam }) =>
-      getRuns({ cursor: (pageParam as string | null) ?? null }),
-    initialPageParam: null as string | null,
+    queryFn: ({ pageParam }) => getRuns({ cursor: pageParam ?? null }),
+    initialPageParam: null,
     getNextPageParam: (lastPage) => lastPage.pageInfo.nextCursor,
     staleTime: 300 * 1000,
     gcTime: 600 * 1000,
+    select: (data) => data.pages.flatMap((page) => page.items),
   });
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [mode, setMode] = useState<"create" | "edit">("create");
@@ -44,11 +45,6 @@ export default function RunsPage() {
     threshold: 0,
     delay: 0,
   });
-
-  const runs = useMemo(
-    () => data?.pages.flatMap((page) => page.items) ?? [],
-    [data]
-  );
 
   const createMutation = useMutation({
     mutationFn: createRun,
