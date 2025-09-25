@@ -11,7 +11,7 @@ export interface Run {
   pacePerKm: string;
 }
 
-export interface RunProps {
+export interface RunModel {
   items: Run[];
   pageInfo: {
     hasNextPage: boolean;

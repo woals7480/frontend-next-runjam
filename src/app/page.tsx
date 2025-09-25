@@ -31,11 +31,11 @@ export default function Home() {
               <strong>환영합니다</strong> {data.nickname}
             </p>
             <div style={{ display: "flex", gap: 12, marginTop: 12 }}>
-              <button className={ui.btn} onClick={() => router.push("/me")}>
-                내 정보
-              </button>
               <button className={ui.btn} onClick={() => router.push("/runs")}>
-                달리기 기록
+                내 달리기
+              </button>
+              <button className={ui.btn} onClick={() => router.push("/shoes")}>
+                내 러닝화
               </button>
               <button className={ui.btn} onClick={onLogout}>
                 로그아웃

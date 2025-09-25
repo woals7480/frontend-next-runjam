@@ -8,7 +8,7 @@ import {
 import { getRuns } from "./_lib/getRuns";
 import RunCrad from "./_components/RunCard";
 import * as s from "./runs.css";
-import { Run, RunProps } from "@/model/Run";
+import { Run, RunModel } from "@/model/Run";
 import RunFormModal from "./_components/RunFormModal";
 import { useEffect, useState } from "react";
 import { createRun } from "./_lib/createRun";
@@ -29,7 +29,7 @@ export default function RunsPage() {
     isFetching,
     hasNextPage,
     fetchNextPage,
-  } = useInfiniteQuery<RunProps, Error, Run[], ["runs"], string | null>({
+  } = useInfiniteQuery<RunModel, Error, Run[], ["runs"], string | null>({
     queryKey: ["runs"],
     queryFn: ({ pageParam }) => getRuns({ cursor: pageParam ?? null }),
     initialPageParam: null,
