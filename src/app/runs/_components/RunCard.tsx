@@ -15,6 +15,7 @@ import type {} from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteRun } from "../_lib/deleteRun";
 import ConfirmModal from "@/app/_components/ConfirmModal";
+import { pacePerKmSeconds, secondsToKorean } from "@/utils/time";
 
 type Props = {
   run: Run;
@@ -172,11 +173,13 @@ export default function RunCrad({ run, onOpen }: Props) {
             <div className={s.label}>Km</div>
           </div>
           <div className={s.metric}>
-            <div className={s.value}>{run.pacePerKm}</div>
+            <div className={s.value}>
+              {pacePerKmSeconds(run.durationSec, run.distance)}
+            </div>
             <div className={s.label}>평균 페이스</div>
           </div>
           <div className={s.metric}>
-            <div className={s.value}>{run.durationText}</div>
+            <div className={s.value}>{secondsToKorean(run.durationSec)}</div>
             <div className={s.label}>시간</div>
           </div>
         </div>

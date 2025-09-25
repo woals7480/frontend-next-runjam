@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getShoeDetail } from "../_lib/getShoeDetail";
 import { ShoeDetailModel } from "@/model/Shoe";
 import LoadingSpinner from "@/app/_components/LoadingSpinner";
+import { pacePerKmSeconds, secondsToKorean } from "@/utils/time";
 
 export default function ShoeDetailPage() {
   const router = useRouter();
@@ -78,12 +79,17 @@ export default function ShoeDetailPage() {
               </div>
               <div>
                 <div className={s.statNum}>
-                  {data.stats.avgPace ?? "0시간 0분 0초"}
+                  {pacePerKmSeconds(
+                    data.stats.totalDurationSec,
+                    data.stats.totalDistanceKm
+                  )}
                 </div>
                 <div className={s.statLabel}>평균 페이스</div>
               </div>
               <div>
-                <div className={s.statNum}>{data.stats.totalDurationText}</div>
+                <div className={s.statNum}>
+                  {secondsToKorean(data.stats.totalDurationSec)}
+                </div>
                 <div className={s.statLabel}>시간</div>
               </div>
             </div>

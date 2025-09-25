@@ -7,8 +7,6 @@ export interface Run {
   distance: number;
   durationSec: number;
   note?: string;
-  durationText: string;
-  pacePerKm: string;
 }
 
 export interface RunModel {

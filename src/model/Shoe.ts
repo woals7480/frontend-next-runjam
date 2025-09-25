@@ -20,10 +20,7 @@ export interface ShoeModel {
 export interface ShoeStats {
   runCount: number;
   totalDurationSec: number;
-  totalDurationText: string;
   totalDistanceKm: number;
-  avgPaceSecPerKm: string;
-  avgPace: string;
 }
 
 export interface ShoeDetailModel extends ShoeModel {
