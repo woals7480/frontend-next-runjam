@@ -15,5 +15,18 @@ export interface ShoeModel {
   nickname?: string;
   totalMileage: number;
   userId: string;
-  mileages: MileageModel[];
+}
+
+export interface ShoeStats {
+  runCount: number;
+  totalDurationSec: number;
+  totalDurationText: string;
+  totalDistanceKm: number;
+  avgPaceSecPerKm: string;
+  avgPace: string;
+}
+
+export interface ShoeDetailModel extends ShoeModel {
+  mileages?: MileageModel[];
+  stats: ShoeStats;
 }

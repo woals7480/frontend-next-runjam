@@ -47,6 +47,12 @@ globalStyle("a", { color: "inherit", textDecoration: "none" });
 
 globalStyle("ul", { listStyle: "none" });
 
+globalStyle("button", {
+  border: "none",
+  backgroundColor: "inherit",
+  cursor: "pointer",
+});
+
 // 다크 모드 color-scheme
 globalStyle("html", {
   "@media": {
