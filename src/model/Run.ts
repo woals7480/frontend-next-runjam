@@ -1,3 +1,5 @@
+import { MileageModel, ShoeModel } from "./Shoe";
+
 export interface Run {
   id: string;
   createdAt: Date;
@@ -7,6 +9,7 @@ export interface Run {
   distance: number;
   durationSec: number;
   note?: string;
+  mileage?: RunMileage;
 }
 
 export interface RunModel {
@@ -18,3 +21,5 @@ export interface RunModel {
   };
   totalDistance: number;
 }
+
+export type RunMileage = MileageModel & { shoe: ShoeModel };

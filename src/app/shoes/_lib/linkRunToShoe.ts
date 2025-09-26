@@ -1,9 +1,13 @@
 import { fetchWithRefresh } from "@/app/_lib/fetchWithRefresh";
 import toast from "react-hot-toast";
-import { RunPayload } from "../_types/runForm";
 
-export async function createRun(body: RunPayload) {
-  const url = `${process.env.NEXT_PUBLIC_API_URL}/run`;
+type Props = {
+  id: string;
+  body: { runId: string };
+};
+
+export async function linkRunToShoe({ id, body }: Props) {
+  const url = `${process.env.NEXT_PUBLIC_API_URL}/shoes/${id}/mileages`;
   const res = await fetchWithRefresh(url, {
     method: "POST",
     headers: {
@@ -15,8 +19,9 @@ export async function createRun(body: RunPayload) {
   const data = await res.json();
 
   if (!res.ok) {
-    toast.error(data?.message ?? "달리기기록 등록에 실패하였습니다.");
-    throw new Error(data?.message ?? "달리기기록 등록에 실패하였습니다.");
+    const message = data?.message ?? "신발 연결에 실패하였습니다.";
+    toast.error(message);
+    throw new Error(message);
   }
 
   return data;

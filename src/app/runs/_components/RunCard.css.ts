@@ -166,3 +166,21 @@ export const modalContent = style({
   boxShadow: "0 10px 30px rgba(0,0,0,.2)",
   padding: "16px",
 });
+
+export const divider = style({
+  height: 1,
+  background: "rgba(0,0,0,0.08)",
+  margin: "0 16px",
+});
+
+export const shoeWrap = style({
+  cursor: "pointer",
+  padding: "16px",
+  display: "flex",
+  alignItems: "center",
+});
+
+export const shoeName = style({
+  fontSize: "18px",
+  marginLeft: "12px",
+});

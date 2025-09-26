@@ -1,5 +1,5 @@
 // src/app/shoes/ShoesPage.css.ts
-import { style, globalStyle } from "@vanilla-extract/css";
+import { style } from "@vanilla-extract/css";
 
 export const page = style({
   maxWidth: 720,
@@ -12,12 +12,6 @@ export const header = style({
   alignItems: "center",
   justifyContent: "space-between",
   padding: "8px 0 16px",
-});
-
-export const backBtn = style({
-  border: "none",
-  backgroundColor: "inherit",
-  cursor: "pointer",
 });
 
 export const title = style({

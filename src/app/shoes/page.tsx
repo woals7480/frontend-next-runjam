@@ -21,11 +21,7 @@ export default function ShoesPage() {
   return (
     <main className={s.page}>
       <header className={s.header}>
-        <button
-          className={s.backBtn}
-          onClick={() => router.back()}
-          aria-label="뒤로가기"
-        >
+        <button onClick={() => router.back()} aria-label="뒤로가기">
           <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden>
             <path
               d="M15 18l-6-6 6-6"
@@ -36,7 +32,7 @@ export default function ShoesPage() {
             />
           </svg>
         </button>
-        <h1 className={s.title}>내 러닝화</h1>
+        <h2 className={s.title}>내 러닝화</h2>
         <button
           className={s.addBtn}
           onClick={() => router.push("/shoes/new")}

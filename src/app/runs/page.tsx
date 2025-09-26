@@ -18,8 +18,11 @@ import LoadingSpinner from "../_components/LoadingSpinner";
 import { useInView } from "react-intersection-observer";
 import { secondsToHHMMSS } from "@/utils/time";
 import { RunPayload } from "./_types/runForm";
+import { useRouter } from "next/navigation";
+import RunShoeLinkModal from "./_components/RunShoeLinkModal";
 
 export default function RunsPage() {
+  const router = useRouter();
   const queryClient = useQueryClient();
   const {
     data: runs = [],
@@ -41,10 +44,12 @@ export default function RunsPage() {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [mode, setMode] = useState<"create" | "edit">("create");
   const [selectedRun, setSelectRun] = useState<Run | null>(null);
+  const [selectedRunLink, setSelectedRunLink] = useState<Run | null>(null);
   const { ref, inView } = useInView({
     threshold: 0,
     delay: 0,
   });
+  const [isShoeOpen, setIsShoeOpen] = useState(false);
 
   const createMutation = useMutation({
     mutationFn: createRun,
@@ -90,6 +95,16 @@ export default function RunsPage() {
     setSelectRun(null);
   };
 
+  const onShoeOpen = (run: Run) => {
+    setIsShoeOpen(true);
+    setSelectedRunLink(run);
+  };
+
+  const onShoeClose = () => {
+    setIsShoeOpen(false);
+    setSelectedRunLink(null);
+  };
+
   useEffect(() => {
     if (inView && !isFetching && hasNextPage) {
       fetchNextPage();
@@ -99,6 +114,17 @@ export default function RunsPage() {
   return (
     <main className={s.mainWrapper}>
       <div className={s.sectionHeader}>
+        <button onClick={() => router.back()} aria-label="뒤로가기">
+          <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden>
+            <path
+              d="M15 18l-6-6 6-6"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+            />
+          </svg>
+        </button>
         <h2 className={s.sectionTitle}>달리기 활동</h2>
         <button className={s.plusBtn} onClick={() => setIsOpen(true)}>
           <svg
@@ -173,7 +199,12 @@ export default function RunsPage() {
 
           <div className={s.list}>
             {runs.map((run) => (
-              <RunCrad run={run} key={run.id} onOpen={onEditOpen} />
+              <RunCrad
+                run={run}
+                key={run.id}
+                onOpen={onEditOpen}
+                onShoeOpen={onShoeOpen}
+              />
             ))}
           </div>
         </>
@@ -203,6 +234,12 @@ export default function RunsPage() {
           mode={mode}
         />
       )}
+      <RunShoeLinkModal
+        isOpen={isShoeOpen}
+        onClose={onShoeClose}
+        runId={selectedRunLink?.id ?? null}
+        initialMileage={selectedRunLink?.mileage ?? null}
+      />
     </main>
   );
 }

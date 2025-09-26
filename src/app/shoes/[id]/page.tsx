@@ -13,7 +13,7 @@ export default function ShoeDetailPage() {
   const router = useRouter();
   const { id } = useParams<{ id: string }>();
   const { data, isLoading, isError } = useQuery<ShoeDetailModel>({
-    queryKey: ["shoe", id],
+    queryKey: ["shoes", id],
     queryFn: () => getShoeDetail(id as string),
     staleTime: 300 * 1000,
     gcTime: 600 * 1000,

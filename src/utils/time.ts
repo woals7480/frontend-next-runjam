@@ -26,7 +26,7 @@ export function SecToMs(sec: number): string {
 }
 
 export function pacePerKmSeconds(totalSeconds: number, distanceKm: number) {
-  if (!(distanceKm > 0) || !(totalSeconds >= 0)) return NaN;
+  if (!(distanceKm > 0) || !(totalSeconds >= 0)) return 0;
   const v = totalSeconds / distanceKm;
 
   return SecToMs(v);
