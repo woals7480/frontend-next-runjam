@@ -13,15 +13,10 @@ import { getShoes } from "@/app/shoes/_lib/getShoes";
 import { linkRunToShoe } from "@/app/shoes/_lib/linkRunToShoe";
 import { unlinkRunShoe } from "@/app/shoes/_lib/unlinkRunShoe";
 import { RunMileage } from "@/model/Run";
+import { shoeLinkSchema } from "@/app/_schemas/shoeLink";
 
-// ── 폼 스키마 ───────────────────────────────────────────────────────────────
-const formSchema = z.object({
-  shoeId: z.string().min(1, "신발을 선택하세요."),
-});
+type FormValues = z.infer<typeof shoeLinkSchema>;
 
-type FormValues = z.infer<typeof formSchema>;
-
-// ── 컴포넌트 ────────────────────────────────────────────────────────────────
 type Props = {
   isOpen: boolean;
   onClose: () => void;
@@ -64,8 +59,9 @@ export default function RunShoeLinkModal({
     formState: { errors, isSubmitting },
     reset,
     setValue,
+    watch,
   } = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(shoeLinkSchema),
     defaultValues: { shoeId: initialMileage?.shoe.id ?? "" },
   });
 
@@ -103,6 +99,7 @@ export default function RunShoeLinkModal({
   });
 
   const onSubmit = (values: FormValues) => linkMutation.mutate(values);
+  const selectedShoeId = watch("shoeId");
 
   return (
     <Modal
@@ -146,7 +143,7 @@ export default function RunShoeLinkModal({
               {filtered.map((shoe) => {
                 const id = `shoe-${shoe.id}`;
                 const isSelected =
-                  (watchlessGetValue() ?? initialMileage?.shoe.id) === shoe.id;
+                  (selectedShoeId ?? initialMileage?.shoe.id) === shoe.id;
                 return (
                   <li
                     key={shoe.id}
@@ -217,18 +214,4 @@ export default function RunShoeLinkModal({
       </form>
     </Modal>
   );
-
-  // react-hook-form의 watch를 쓰지 않고 선택 강조를 위한 간단 util
-  function watchlessGetValue() {
-    try {
-      // @ts-expect-error 접근 허용 (내부 state)
-      return (
-        (register("shoeId")?.ref?.form?.elements?.namedItem("shoeId")?.value as
-          | string
-          | undefined) ?? undefined
-      );
-    } catch {
-      return undefined;
-    }
-  }
 }
