@@ -51,6 +51,14 @@ export default function RunCrad({ run, onOpen, onShoeOpen }: Props) {
     deleteRuns.mutate(run.id);
   };
 
+  const openModal = () => {
+    setIsOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsOpen(false);
+  };
+
   useEffect(() => {
     function onDoc(e: MouseEvent) {
       if (!menuRef.current?.contains(e.target as Node)) setMenuOpen(false);
@@ -65,14 +73,6 @@ export default function RunCrad({ run, onOpen, onShoeOpen }: Props) {
       document.removeEventListener("keydown", onKey);
     };
   }, []);
-
-  const openModal = () => {
-    setIsOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsOpen(false);
-  };
 
   const shoeName = !run.mileage
     ? "신발 추가"

@@ -27,7 +27,7 @@ export const hero = style({
 });
 
 export const kmNum = style({
-  fontSize: 96,
+  fontSize: 72,
   fontWeight: 900,
   letterSpacing: -2,
   lineHeight: 0.9,
@@ -36,7 +36,7 @@ export const kmNum = style({
 export const kmUnit = style({
   display: "block",
   marginTop: 8,
-  fontSize: 44,
+  fontSize: 36,
   fontWeight: 900,
 });
 
@@ -60,7 +60,7 @@ export const card = style({
 });
 
 export const statNum = style({
-  fontSize: 28,
+  fontSize: 22,
   fontWeight: 800,
 });
 
@@ -86,4 +86,83 @@ export const centerBox = style({
 export const helperText = style({
   fontSize: 14,
   opacity: 0.8,
+});
+
+export const menuWrapper = style({
+  position: "relative",
+});
+
+export const menu = style({
+  position: "absolute",
+  top: "18px",
+  right: 0,
+  minWidth: 140,
+  padding: 6,
+  borderRadius: 12,
+  background: "#ffffff",
+  border: "1px solid #e5e7eb",
+  boxShadow: "0 10px 30px rgba(0,0,0,.12)",
+  opacity: 0,
+  transform: "translateY(-4px)",
+  pointerEvents: "none",
+  transition: "opacity .15s ease, transform .15s ease",
+  zIndex: 20,
+  "@media": {
+    "(prefers-color-scheme: dark)": {
+      background: "rgba(17,24,39,0.95)",
+      border: "1px solid #374151",
+    },
+  },
+});
+
+export const menuOpen = style({
+  opacity: 1,
+  transform: "translateY(0)",
+  pointerEvents: "auto",
+});
+
+export const item = style({
+  width: "100%",
+  display: "flex",
+  alignItems: "center",
+  gap: 8,
+  padding: "10px 10px",
+  borderRadius: 8,
+  fontSize: 14,
+  lineHeight: 1.1,
+  color: "#111827",
+  background: "transparent",
+  border: "none",
+  cursor: "pointer",
+  textAlign: "left",
+  selectors: {
+    "&:hover": { background: "#f3f4f6" },
+    "&:focus-visible": { outline: "2px solid #60a5fa", outlineOffset: 2 },
+  },
+  "@media": {
+    "(prefers-color-scheme: dark)": {
+      color: "#e5e7eb",
+      selectors: { "&:hover": { background: "rgba(255,255,255,0.10)" } },
+    },
+  },
+});
+
+export const modalOverlay = style({
+  inset: 0,
+  position: "fixed",
+  background: "rgba(0,0,0,.45)",
+});
+
+export const modalContent = style({
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  borderRadius: "8px",
+  overflow: "hidden",
+  outline: "none",
+  background: "white",
+  minWidth: "400px",
+  boxShadow: "0 10px 30px rgba(0,0,0,.2)",
+  padding: "16px",
 });

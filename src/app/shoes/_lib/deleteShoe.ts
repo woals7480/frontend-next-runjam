@@ -1,17 +1,16 @@
 import { fetchWithRefresh } from "@/app/_lib/fetchWithRefresh";
 import toast from "react-hot-toast";
 
-export async function deleteRun(id: string) {
-  const url = `${process.env.NEXT_PUBLIC_API_URL}/run/${id}`;
+export async function deleteShoe(id: string) {
+  const url = `${process.env.NEXT_PUBLIC_API_URL}/shoes/${id}`;
   const res = await fetchWithRefresh(url, {
     method: "DELETE",
   });
 
-  // 응답을 JSON으로 변환 (성공/실패 공통)
   const data = await res.json();
 
   if (!res.ok) {
-    const message = data?.message ?? "달리기기록 삭제를 실패하였습니다.";
+    const message = data?.message ?? "신발 삭제를 실패하였습니다.";
     toast.error(message);
     throw new Error(message);
   }

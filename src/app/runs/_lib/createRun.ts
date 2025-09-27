@@ -15,8 +15,9 @@ export async function createRun(body: RunPayload) {
   const data = await res.json();
 
   if (!res.ok) {
-    toast.error(data?.message ?? "달리기기록 등록에 실패하였습니다.");
-    throw new Error(data?.message ?? "달리기기록 등록에 실패하였습니다.");
+    const message = data?.message ?? "달리기기록 등록에 실패하였습니다.";
+    toast.error(message);
+    throw new Error(message);
   }
 
   return data;

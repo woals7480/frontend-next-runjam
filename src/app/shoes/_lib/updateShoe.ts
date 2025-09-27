@@ -1,9 +1,12 @@
 import { fetchWithRefresh } from "@/app/_lib/fetchWithRefresh";
+import { ShoeModel } from "@/model/Shoe";
 import toast from "react-hot-toast";
-import { RunPayload } from "../_types/runForm";
 
-export async function updateRun(id: string, body: RunPayload) {
-  const url = `${process.env.NEXT_PUBLIC_API_URL}/run/${id}`;
+export async function updateShoe(
+  id: string,
+  body: Partial<Pick<ShoeModel, "brand" | "model" | "nickname">>
+) {
+  const url = `${process.env.NEXT_PUBLIC_API_URL}/shoes/${id}`;
   const res = await fetchWithRefresh(url, {
     method: "PATCH",
     headers: {

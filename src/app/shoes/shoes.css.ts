@@ -23,7 +23,6 @@ export const addBtn = style({
   width: 36,
   height: 36,
   borderRadius: 12,
-  border: "1px solid rgba(0,0,0,0.08)",
   display: "grid",
   placeItems: "center",
   cursor: "pointer",

@@ -3,15 +3,28 @@
 
 import { useParams, useRouter } from "next/navigation";
 import * as s from "./ShoeDetil.css";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getShoeDetail } from "../_lib/getShoeDetail";
 import { ShoeDetailModel } from "@/model/Shoe";
 import LoadingSpinner from "@/app/_components/LoadingSpinner";
 import { pacePerKmSeconds, secondsToKorean } from "@/utils/time";
+import clsx from "clsx";
+import {
+  MouseEvent as ReactMouseEvent,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import ConfirmModal from "@/app/_components/ConfirmModal";
+import { deleteShoe } from "../_lib/deleteShoe";
 
 export default function ShoeDetailPage() {
+  const queryClient = useQueryClient();
   const router = useRouter();
   const { id } = useParams<{ id: string }>();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const [isOpen, setIsOpen] = useState(false);
   const { data, isLoading, isError } = useQuery<ShoeDetailModel>({
     queryKey: ["shoes", id],
     queryFn: () => getShoeDetail(id as string),
@@ -19,6 +32,55 @@ export default function ShoeDetailPage() {
     gcTime: 600 * 1000,
     enabled: !!id,
   });
+
+  const onClickdots = (e: ReactMouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    setMenuOpen((v) => !v);
+  };
+
+  const deleteRuns = useMutation({
+    mutationFn: deleteShoe,
+    onSuccess: async () => {
+      // 상세 쿼리 취소/제거 (즉시 재요청 방지)
+      await queryClient.cancelQueries({ queryKey: ["shoes", id], exact: true });
+      queryClient.removeQueries({ queryKey: ["shoes", id], exact: true });
+
+      await router.back();
+
+      queryClient.invalidateQueries({ queryKey: ["shoes"] });
+      queryClient.invalidateQueries({ queryKey: ["runs"] });
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+
+  const onClickDeleteRun = () => {
+    deleteRuns.mutate(id);
+  };
+
+  const openModal = () => {
+    setIsOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsOpen(false);
+  };
+
+  useEffect(() => {
+    function onDoc(e: MouseEvent) {
+      if (!menuRef.current?.contains(e.target as Node)) setMenuOpen(false);
+    }
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") setMenuOpen(false);
+    }
+    document.addEventListener("mousedown", onDoc);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onDoc);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, []);
 
   const name =
     data?.nickname ?? (data ? `${data.brand} ${data.model}` : "신발");
@@ -37,13 +99,57 @@ export default function ShoeDetailPage() {
           </svg>
         </button>
         <div className={s.title}>{name}</div>
-        <button aria-label="메뉴">
-          <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden>
-            <circle cx="5" cy="12" r="2" />
-            <circle cx="12" cy="12" r="2" />
-            <circle cx="19" cy="12" r="2" />
-          </svg>
-        </button>
+        <div className={s.menuWrapper} ref={menuRef}>
+          <button aria-label="메뉴" onClick={onClickdots}>
+            <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden>
+              <circle cx="5" cy="12" r="2" />
+              <circle cx="12" cy="12" r="2" />
+              <circle cx="19" cy="12" r="2" />
+            </svg>
+          </button>
+          <div
+            className={clsx(s.menu, menuOpen && s.menuOpen)}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              className={s.item}
+              onClick={() => router.push(`/shoes/${id}/edit`)}
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                width="20"
+                height="20"
+              >
+                <path d="M12 20h9" strokeWidth="2" strokeLinecap="round" />
+                <path
+                  d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"
+                  strokeWidth="2"
+                />
+              </svg>
+              수정
+            </button>
+            <button className={s.item} onClick={() => openModal()}>
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                width="20"
+                height="20"
+              >
+                <path d="M3 6h18" strokeWidth="2" strokeLinecap="round" />
+                <path d="M8 6V4h8v2" strokeWidth="2" />
+                <path
+                  d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"
+                  strokeWidth="2"
+                />
+                <path d="M10 11v6M14 11v6" strokeWidth="2" />
+              </svg>
+              삭제
+            </button>
+          </div>
+        </div>
       </header>
       {isLoading && (
         <div className={s.centerBox} aria-busy="true">
@@ -97,6 +203,17 @@ export default function ShoeDetailPage() {
           </section>
         </div>
       )}
+      <ConfirmModal
+        isOpen={isOpen}
+        onCancel={closeModal}
+        onConfirm={onClickDeleteRun}
+        title="신발 삭제"
+        description="이 작업은 되돌릴 수 없어요. 삭제하시겠습니까?"
+        confirmLabel="삭제"
+        cancelLabel="취소"
+        contentClassName={s.modalContent}
+        overlayClassName={s.modalOverlay}
+      />
     </main>
   );
 }
