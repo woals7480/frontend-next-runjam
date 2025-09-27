@@ -11,13 +11,7 @@ import { QueryClient } from "@tanstack/react-query";
 import { getUserMe } from "./_lib/getUserMe";
 import { User } from "@/model/User";
 import { useAuthStore } from "@/store/auth";
-
-const LoginSchema = z.object({
-  email: z.string().email("올바른 이메일형식을 입력해주세요"),
-  password: z.string().min(6, "비밀번호는 6자 이상이어야 합니다"),
-});
-
-type LoginForm = z.infer<typeof LoginSchema>;
+import { LoginForm, LoginSchema } from "@/app/_schemas/loginForm";
 
 export default function LoginPage() {
   const router = useRouter();

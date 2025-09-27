@@ -13,9 +13,7 @@ import { getShoes } from "@/app/shoes/_lib/getShoes";
 import { linkRunToShoe } from "@/app/shoes/_lib/linkRunToShoe";
 import { unlinkRunShoe } from "@/app/shoes/_lib/unlinkRunShoe";
 import { RunMileage } from "@/model/Run";
-import { shoeLinkSchema } from "@/app/_schemas/shoeLink";
-
-type FormValues = z.infer<typeof shoeLinkSchema>;
+import { ShoeLinkFormValues, shoeLinkSchema } from "@/app/_schemas/shoeLink";
 
 type Props = {
   isOpen: boolean;
@@ -60,7 +58,7 @@ export default function RunShoeLinkModal({
     reset,
     setValue,
     watch,
-  } = useForm<FormValues>({
+  } = useForm<ShoeLinkFormValues>({
     resolver: zodResolver(shoeLinkSchema),
     defaultValues: { shoeId: initialMileage?.shoe.id ?? "" },
   });
@@ -75,7 +73,7 @@ export default function RunShoeLinkModal({
 
   // 연결/변경
   const linkMutation = useMutation({
-    mutationFn: (v: FormValues) =>
+    mutationFn: (v: ShoeLinkFormValues) =>
       linkRunToShoe({ id: v.shoeId, body: { runId: runId ?? "" } }),
     onSuccess: async (v) => {
       queryClient.invalidateQueries({ queryKey: ["runs"] });
@@ -98,7 +96,7 @@ export default function RunShoeLinkModal({
     },
   });
 
-  const onSubmit = (values: FormValues) => linkMutation.mutate(values);
+  const onSubmit = (values: ShoeLinkFormValues) => linkMutation.mutate(values);
   const selectedShoeId = watch("shoeId");
 
   return (

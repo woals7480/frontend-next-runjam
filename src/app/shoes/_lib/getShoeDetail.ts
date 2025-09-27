@@ -1,12 +1,13 @@
 import { fetchWithRefresh } from "@/app/_lib/fetchWithRefresh";
 import toast from "react-hot-toast";
 
-export async function getShoeDetail(id: string) {
+export async function getShoeDetail(id: string, signal?: AbortSignal) {
   const url = `${process.env.NEXT_PUBLIC_API_URL}/shoes/${id}`;
 
   const res = await fetchWithRefresh(url, {
     next: { tags: ["shoes", id] },
     method: "GET",
+    signal,
   });
 
   const data = await res.json();

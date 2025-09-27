@@ -41,14 +41,16 @@ export default function ShoeDetailPage() {
   const deleteRuns = useMutation({
     mutationFn: deleteShoe,
     onSuccess: async () => {
-      // 상세 쿼리 취소/제거 (즉시 재요청 방지)
+      // 1) 상세 쿼리 정확히 그 키만 취소/제거
       await queryClient.cancelQueries({ queryKey: ["shoes", id], exact: true });
       queryClient.removeQueries({ queryKey: ["shoes", id], exact: true });
 
-      await router.back();
+      // 2) 상세가 다시 렌더되지 않도록 back() 대신 교체 이동
+      await router.replace("/shoes");
 
-      queryClient.invalidateQueries({ queryKey: ["shoes"] });
-      queryClient.invalidateQueries({ queryKey: ["runs"] });
+      // 3) 목록/연관만 리프레시 (상세는 건드리지 않음)
+      queryClient.invalidateQueries({ queryKey: ["shoes"], exact: true }); // ★ exact
+      queryClient.invalidateQueries({ queryKey: ["runs"], exact: true });
     },
     onError: (error) => {
       console.log(error);
