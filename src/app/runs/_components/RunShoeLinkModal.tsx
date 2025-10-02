@@ -35,8 +35,7 @@ export default function RunShoeLinkModal({
     queryKey: ["shoes"],
     queryFn: getShoes,
     enabled: isOpen,
-    staleTime: 300 * 1000,
-    gcTime: 600 * 1000,
+    staleTime: Infinity,
   });
 
   const [keyword, setKeyword] = useState("");

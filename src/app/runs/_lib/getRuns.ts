@@ -18,8 +18,9 @@ export async function getRuns({ cursor }: Props) {
   const data = await res.json();
 
   if (!res.ok) {
-    toast.error(data?.message ?? "달리기기록 불러오기를 실패하였습니다.");
-    throw new Error(data?.message ?? "달리기기록 불러오기를 실패하였습니다.");
+    const message = "달리기기록 불러오기를 실패하였습니다.";
+    toast.error(message);
+    throw new Error(message);
   }
 
   return data;

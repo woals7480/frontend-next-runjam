@@ -14,8 +14,7 @@ export default function ShoesPage() {
   const { data, isLoading, isError, refetch } = useQuery<ShoeModel[]>({
     queryKey: ["shoes"],
     queryFn: getShoes,
-    staleTime: 300 * 1000,
-    gcTime: 600 * 1000,
+    staleTime: Infinity,
   });
 
   return (

@@ -14,12 +14,9 @@ export async function getUserMe() {
 
   if (!res.ok) {
     // 서버에서 내려준 에러 메시지(data.message)를 우선적으로 사용
-    toast.error(
-      data?.message ?? "로그인 실패. 이메일/비밀번호를 확인해주세요."
-    );
-    throw new Error(
-      data?.message ?? "로그인 실패. 이메일/비밀번호를 확인해주세요."
-    );
+    const mesasge = data?.message ?? "내 정보 가져오기를 실패하였습니다.";
+    toast.error(mesasge);
+    throw new Error(mesasge);
   }
 
   return data;

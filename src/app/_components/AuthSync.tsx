@@ -12,7 +12,7 @@ export default function AuthSync() {
     queryKey: ["auth", "me"],
     queryFn: getUserMe,
     retry: false,
-    staleTime: 0,
+    staleTime: Infinity,
   });
 
   useEffect(() => {

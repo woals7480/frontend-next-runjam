@@ -19,12 +19,10 @@ export async function postLogin({ email, password }: Props) {
 
   if (!res.ok) {
     // 서버에서 내려준 에러 메시지(data.message)를 우선적으로 사용
-    toast.error(
-      data?.message ?? "로그인 실패. 이메일/비밀번호를 확인해주세요."
-    );
-    throw new Error(
-      data?.message ?? "로그인 실패. 이메일/비밀번호를 확인해주세요."
-    );
+    const message =
+      data?.message ?? "로그인 실패. 이메일/비밀번호를 확인해주세요.";
+    toast.error(message);
+    throw new Error(message);
   }
 
   return data;

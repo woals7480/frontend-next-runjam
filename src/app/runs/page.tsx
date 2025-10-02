@@ -38,8 +38,8 @@ export default function RunsPage() {
     queryFn: ({ pageParam }) => getRuns({ cursor: pageParam ?? null }),
     initialPageParam: null,
     getNextPageParam: (lastPage) => lastPage.pageInfo.nextCursor,
-    staleTime: 300 * 1000,
-    gcTime: 600 * 1000,
+    staleTime: Infinity,
+    gcTime: 60 * 60 * 1000,
     select: (data) => data.pages.flatMap((page) => page.items),
   });
   const [isOpen, setIsOpen] = useState<boolean>(false);

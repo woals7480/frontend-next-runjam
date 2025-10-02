@@ -43,32 +43,28 @@ export default function RunCharts() {
     queryKey: ["runs", "stats", "weekly", `${start}_${end}`],
     queryFn: () => getRunStatsWeekly({ date: weekDate }),
     enabled: tab === "week",
-    staleTime: 5 * 60 * 1000,
-    gcTime: 10 * 60 * 1000,
+    staleTime: Infinity,
   });
 
   const monthlyQuery = useQuery<MonthlyStats>({
-    queryKey: ["runs", "stats", "monthly", `${year}-${month}`],
+    queryKey: ["runs", "stats", "monthly", `${year}_${month}`],
     queryFn: () => getRunStatsMonthly({ year, month }),
     enabled: tab === "month",
-    staleTime: 5 * 60 * 1000,
-    gcTime: 10 * 60 * 1000,
+    staleTime: Infinity,
   });
 
   const yearlyQuery = useQuery<YearlyStats>({
     queryKey: ["runs", "stats", "yearly", `${year}`],
     queryFn: () => getRunStatsYearly({ year }),
     enabled: tab === "year",
-    staleTime: 5 * 60 * 1000,
-    gcTime: 10 * 60 * 1000,
+    staleTime: Infinity,
   });
 
   const overallQuery = useQuery<OverallStats>({
     queryKey: ["runs", "stats", "overall"],
     queryFn: () => getRunStatsOverall(),
     enabled: tab === "all",
-    staleTime: 5 * 60 * 1000,
-    gcTime: 10 * 60 * 1000,
+    staleTime: Infinity,
   });
 
   const query =

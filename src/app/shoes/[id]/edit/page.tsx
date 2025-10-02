@@ -17,8 +17,7 @@ export default function EditShoePage() {
   const { data, isLoading } = useQuery<ShoeDetailModel>({
     queryKey: ["shoe", id],
     queryFn: () => getShoeDetail(id as string),
-    staleTime: 300 * 1000,
-    gcTime: 600 * 1000,
+    staleTime: Infinity,
     enabled: !!id,
   });
 

@@ -72,10 +72,6 @@ export const btn = style({
   padding: "8px 14px",
   fontSize: 14,
   cursor: "pointer",
-  selectors: {
-    "&:hover": { background: "#f9fafb" },
-    "&:active": { background: "#f3f4f6" },
-  },
   "@media": {
     "(prefers-color-scheme: dark)": {
       background: "#27272a",

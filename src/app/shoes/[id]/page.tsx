@@ -26,10 +26,10 @@ export default function ShoeDetailPage() {
   const menuRef = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
   const { data, isLoading, isError } = useQuery<ShoeDetailModel>({
-    queryKey: ["shoes", id],
-    queryFn: () => getShoeDetail(id as string),
-    staleTime: 300 * 1000,
-    gcTime: 600 * 1000,
+    queryKey: ["shoe", id],
+    queryFn: ({ signal }) => getShoeDetail(id as string, signal),
+    staleTime: Infinity,
+    retry: false,
     enabled: !!id,
   });
 
@@ -41,15 +41,10 @@ export default function ShoeDetailPage() {
   const deleteRuns = useMutation({
     mutationFn: deleteShoe,
     onSuccess: async () => {
-      // 1) 상세 쿼리 정확히 그 키만 취소/제거
-      await queryClient.cancelQueries({ queryKey: ["shoes", id], exact: true });
-      queryClient.removeQueries({ queryKey: ["shoes", id], exact: true });
-
-      // 2) 상세가 다시 렌더되지 않도록 back() 대신 교체 이동
-      await router.replace("/shoes");
-
-      // 3) 목록/연관만 리프레시 (상세는 건드리지 않음)
-      queryClient.invalidateQueries({ queryKey: ["shoes"], exact: true }); // ★ exact
+      await queryClient.cancelQueries({ queryKey: ["shoe", id], exact: true });
+      queryClient.removeQueries({ queryKey: ["shoe", id], exact: true });
+      await router.back();
+      queryClient.invalidateQueries({ queryKey: ["shoes"], exact: true });
       queryClient.invalidateQueries({ queryKey: ["runs"], exact: true });
     },
     onError: (error) => {
