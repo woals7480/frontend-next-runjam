@@ -1,9 +1,11 @@
 import { style } from "@vanilla-extract/css";
 
 export const page = style({
-  padding: "20px",
   maxWidth: 720,
   margin: "0 auto",
+  border: "1px solid #e5e7eb",
+  padding: 16,
+  borderRadius: 16,
 });
 
 export const header = style({
@@ -32,9 +34,9 @@ export const tabBtn = style({
   cursor: "pointer",
   selectors: {
     '&[data-active="true"]': {
-      background: "#111",
+      background: "#2563eb",
       color: "#fff",
-      borderColor: "#111",
+      borderColor: "#2563eb",
     },
   },
 });
@@ -53,16 +55,20 @@ export const card = style({
   borderRadius: 16,
   background: "#fff",
   boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "space-between",
+  gap: 12,
 });
 
 export const metricLabel = style({ fontSize: 12, opacity: 0.65 });
-export const metricValueBig = style({
-  fontSize: 36,
+export const metricValue = style({
+  fontSize: "1rem",
   fontWeight: 800,
   lineHeight: 1.1,
+  display: "flex",
+  justifyContent: "flex-end",
 });
-export const metricValueMid = style({ fontSize: 24, fontWeight: 700 });
-export const metricValueSm = style({ fontSize: 16, fontWeight: 700 });
 
 export const chartWrap = style({
   width: "100%",

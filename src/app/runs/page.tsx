@@ -20,6 +20,7 @@ import { secondsToHHMMSS } from "@/utils/time";
 import { RunPayload } from "./_types/runForm";
 import { useRouter } from "next/navigation";
 import RunShoeLinkModal from "./_components/RunShoeLinkModal";
+import RunCharts from "./_components/RunCharts";
 
 export default function RunsPage() {
   const router = useRouter();
@@ -143,6 +144,10 @@ export default function RunsPage() {
             />
           </svg>
         </button>
+      </div>
+
+      <div style={{ marginBottom: " 16px" }}>
+        <RunCharts />
       </div>
 
       {/* ✅ 최초 로딩 */}

@@ -45,7 +45,7 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/runs/:path*"],
+  matcher: ["/runs/:path*", "/shoes/:path*"],
 };
 
 // ---- 내부 유틸 ----

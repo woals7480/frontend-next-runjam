@@ -5,10 +5,11 @@ import * as ui from "@/app/_styles/ui.css";
 import { getUserMe } from "./(auth)/login/_lib/getUserMe";
 import { useAuthStore } from "@/store/auth";
 import RunCharts from "./runs/_components/RunCharts";
+import { postLogout } from "./(auth)/login/_lib/postLogout";
 
 export default function Home() {
   const router = useRouter();
-  const qc = useQueryClient();
+  const queryClient = useQueryClient();
   const authStore = useAuthStore();
   const { data } = useQuery({
     queryKey: ["auth", "me"],
@@ -17,14 +18,13 @@ export default function Home() {
   });
 
   const onLogout = async () => {
-    // await post("/auth/logout", { method: "POST" });
-    // await qc.invalidateQueries({ queryKey: ["auth", "me"] });
-    // router.refresh();
+    await postLogout();
+    await queryClient.clear();
+    await router.refresh();
   };
 
   return (
     <>
-      <RunCharts />
       <main className={ui.page}>
         <div className={ui.card}>
           <h1 className={ui.h1}>RunJam</h1>
@@ -62,6 +62,7 @@ export default function Home() {
             </>
           )}
         </div>
+        <div style={{ marginTop: "16px" }}>{data && <RunCharts />}</div>
       </main>
     </>
   );

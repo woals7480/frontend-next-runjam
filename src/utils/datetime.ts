@@ -19,3 +19,17 @@ export function formatRunAtForInput(apiValue: string) {
   }
   return "";
 }
+
+export function getWeekRange(date?: string): {
+  start: string;
+  end: string;
+} {
+  // dayjs는 기본 일요일 시작 → 월요일 시작으로 +1d 보정
+  const monday = dayjs(date).startOf("week").add(1, "day").startOf("day");
+  const sunday = monday.add(6, "day").endOf("day");
+
+  const start = monday.format("YYYY-MM-DD");
+  const end = sunday.format("YYYY-MM-DD");
+
+  return { start, end };
+}

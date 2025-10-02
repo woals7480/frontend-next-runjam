@@ -65,4 +65,4 @@ export const linkBtn = style({
   color: colorFg,
 });
 
-export const page = style({ maxWidth: 420, margin: "80px auto", padding: 16 });
+export const page = style({ maxWidth: 720, margin: "20px auto", padding: 16 });
