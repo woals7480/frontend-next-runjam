@@ -6,6 +6,7 @@ import { getUserMe } from "./(auth)/login/_lib/getUserMe";
 import { useAuthStore } from "@/store/auth";
 import RunCharts from "./runs/_components/RunCharts";
 import { postLogout } from "./(auth)/login/_lib/postLogout";
+import WeeklyForecast from "./_components/WeeklyForecast";
 
 export default function Home() {
   const router = useRouter();
@@ -62,6 +63,10 @@ export default function Home() {
             </>
           )}
         </div>
+        <section style={{ marginTop: 16 }}>
+          <h2 style={{ fontSize: 18, marginBottom: 8 }}>날씨</h2>
+          <WeeklyForecast />
+        </section>
         <div style={{ marginTop: "16px" }}>{data && <RunCharts />}</div>
       </main>
     </>

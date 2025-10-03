@@ -1,4 +1,3 @@
-import { fetchWithRefresh } from "@/app/_lib/fetchWithRefresh";
 import toast from "react-hot-toast";
 
 type Props = {
@@ -8,7 +7,7 @@ type Props = {
 
 export async function postLogin({ email, password }: Props) {
   const url = `${process.env.NEXT_PUBLIC_API_URL}/auth/login`;
-  const res = await fetchWithRefresh(url, {
+  const res = await fetch(url, {
     method: "POST",
     headers: { "content-type": "application/json" },
     body: JSON.stringify({ email, password }),
