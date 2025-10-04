@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 const GEO_API = "https://api.openweathermap.org/geo/1.0/direct";
+const GEO_REV = "https://api.openweathermap.org/geo/1.0/reverse"; // ★ 추가
 const ONECALL = "https://api.openweathermap.org/data/3.0/onecall";
 const FORECAST5 = "https://api.openweathermap.org/data/2.5/forecast";
 
@@ -17,7 +18,7 @@ type Weekly = {
   timezone_offset: number;
   daily: Daily[];
   source: "onecall" | "forecast5";
-  city?: string;
+  city?: string; // ← 표기용 지역명
 };
 
 export async function GET(req: NextRequest) {
@@ -36,10 +37,13 @@ export async function GET(req: NextRequest) {
         { status: 500 }
       );
 
-    // 1) 좌표 없으면 지오코딩
+    // ── 좌표/지역명 해석 ────────────────────────────────────────────────
     let latNum: number | null = lat ? Number(lat) : null;
     let lonNum: number | null = lon ? Number(lon) : null;
+    let placeName: string | undefined;
+
     if (latNum == null || lonNum == null) {
+      // (A) 도시명 → 좌표
       const geoRes = await fetch(
         `${GEO_API}?q=${encodeURIComponent(
           `${city},${country}`
@@ -50,18 +54,43 @@ export async function GET(req: NextRequest) {
         lat: number;
         lon: number;
         name: string;
+        state?: string;
+        country?: string;
       }>;
       latNum = geo?.[0]?.lat ?? null;
       lonNum = geo?.[0]?.lon ?? null;
+
+      // 표기용 지역명 조합
+      if (geo?.[0]) {
+        const g = geo[0];
+        placeName = [g.name, g.state, g.country].filter(Boolean).join(", ");
+      }
       if (latNum == null || lonNum == null) {
         return NextResponse.json(
           { message: "Geocoding failed" },
           { status: 400 }
         );
       }
+    } else {
+      // (B) 좌표 → 지역명(역지오코딩)
+      const rev = await fetch(
+        `${GEO_REV}?lat=${latNum}&lon=${lonNum}&limit=1&appid=${appid}`,
+        { cache: "no-store" }
+      );
+      if (rev.ok) {
+        const rr = (await rev.json()) as Array<{
+          name: string;
+          state?: string;
+          country?: string;
+        }>;
+        if (rr?.[0]) {
+          const r = rr[0];
+          placeName = [r.name, r.state, r.country].filter(Boolean).join(", ");
+        }
+      }
     }
 
-    // 2) One Call 3.0 시도 (정식 7일 daily)
+    // ── One Call 3.0 (정식 7일 daily) ─────────────────────────────────
     const onecallUrl = `${ONECALL}?lat=${latNum}&lon=${lonNum}&exclude=minutely,hourly,alerts&units=metric&lang=kr&appid=${appid}`;
     const oneRes = await fetch(onecallUrl, { cache: "no-store" });
 
@@ -83,6 +112,7 @@ export async function GET(req: NextRequest) {
         timezone_offset: j.timezone_offset ?? 0,
         daily,
         source: "onecall",
+        city: placeName, // ★ 지역명 포함
       };
       return NextResponse.json(trimmed, {
         headers: {
@@ -91,7 +121,7 @@ export async function GET(req: NextRequest) {
       });
     }
 
-    // 3) 폴백: 5일/3시간 데이터를 일 단위로 집계하여 5~6일 근사값 생성
+    // ── 폴백: 5일/3시간 → 일 단위 집계 ────────────────────────────────
     const fRes = await fetch(
       `${FORECAST5}?lat=${latNum}&lon=${lonNum}&units=metric&lang=kr&appid=${appid}`,
       { cache: "no-store" }
@@ -105,7 +135,7 @@ export async function GET(req: NextRequest) {
     }
     const f = await fRes.json();
     const list: any[] = f.list ?? []; // 3-hour steps
-    // day key (YYYY-MM-DD)로 그룹핑
+
     const byDay = new Map<string, any[]>();
     for (const it of list) {
       const dt = new Date(it.dt * 1000);
@@ -113,6 +143,7 @@ export async function GET(req: NextRequest) {
       if (!byDay.has(key)) byDay.set(key, []);
       byDay.get(key)!.push(it);
     }
+
     const grouped = [...byDay.entries()].slice(0, 7).map(([key, arr]) => {
       const temps = arr
         .map((a) => a.main?.temp)
@@ -123,7 +154,6 @@ export async function GET(req: NextRequest) {
       const winds = arr
         .map((a) => a.wind?.speed)
         .filter((n) => typeof n === "number");
-      // 대표 날씨: 정오(12:00) 근처 또는 첫 항목
       const noon = arr.find((a) => a.dt_txt?.includes("12:00")) ?? arr[0];
       const icons = noon?.weather?.[0];
 
@@ -150,7 +180,7 @@ export async function GET(req: NextRequest) {
       timezone_offset: f.city?.timezone ?? 0,
       daily: grouped,
       source: "forecast5",
-      city: f.city?.name,
+      city: placeName ?? f.city?.name, // ★ 지역명 우선 사용
     };
     return NextResponse.json(trimmed, {
       headers: { "Cache-Control": "s-maxage=300, stale-while-revalidate=120" },

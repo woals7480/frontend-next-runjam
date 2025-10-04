@@ -57,9 +57,7 @@ export default function WeeklyForecast({
             ? "불러오는 중..."
             : isError
             ? "가져올 수 없음"
-            : `출처: ${
-                data?.source === "onecall" ? "One Call 3.0" : "5일/3시간 집계"
-              }`}
+            : data?.city ?? (coords ? "현재 위치" : `${city}, ${country}`)}
         </span>
       </header>
 
@@ -92,6 +90,7 @@ export default function WeeklyForecast({
                   width={48}
                   height={48}
                   className={s.icon}
+                  unoptimized
                 />
                 <div className={s.temp}>
                   {Math.round(d.temp.max)}° / {Math.round(d.temp.min)}°
