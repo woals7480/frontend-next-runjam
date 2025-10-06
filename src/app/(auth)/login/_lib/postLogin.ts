@@ -11,6 +11,7 @@ export async function postLogin({ email, password }: Props) {
     method: "POST",
     headers: { "content-type": "application/json" },
     body: JSON.stringify({ email, password }),
+    credentials: "include",
   });
 
   // 응답을 JSON으로 변환 (성공/실패 공통)
