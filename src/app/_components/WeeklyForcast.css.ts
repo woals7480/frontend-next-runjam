@@ -20,6 +20,7 @@ export const grid = style({
   display: "grid",
   gridTemplateColumns: "repeat(7, minmax(100px, 1fr))",
   gap: 8,
+  overflow: "auto",
 });
 
 export const day = style({

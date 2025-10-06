@@ -59,6 +59,12 @@ export default function Home() {
                 >
                   로그인
                 </button>
+                <button
+                  className={ui.btn}
+                  onClick={() => router.push("/signup")}
+                >
+                  회원가입
+                </button>
               </div>
             </>
           )}
