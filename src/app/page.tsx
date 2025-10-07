@@ -69,11 +69,10 @@ export default function Home() {
             </>
           )}
         </div>
+        <div style={{ marginTop: "16px" }}>{data && <RunCharts />}</div>
         <section style={{ marginTop: 16 }}>
-          <h2 style={{ fontSize: 18, marginBottom: 8 }}>날씨</h2>
           <WeeklyForecast />
         </section>
-        <div style={{ marginTop: "16px" }}>{data && <RunCharts />}</div>
       </main>
     </>
   );
