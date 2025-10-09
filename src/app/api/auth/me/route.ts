@@ -1,0 +1,23 @@
+// app/api/auth/me/route.ts
+import { NextRequest, NextResponse } from "next/server";
+
+export async function GET(req: NextRequest) {
+  const API = process.env.NEXT_PUBLIC_API_URL!;
+  const AT = process.env.COOKIE_NAME_AT!;
+
+  // 프론트 도메인 쿠키에서 AT 읽기
+  const at = req.cookies.get(AT)?.value;
+  if (!at) {
+    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+  }
+
+  // 백엔드에 AT를 쿠키로 전달
+  const apiRes = await fetch(`${API}/auth/me`, {
+    method: "GET",
+    headers: { Cookie: `${AT}=${encodeURIComponent(at)}` },
+    cache: "no-store",
+  });
+
+  const data = await apiRes.json().catch(() => null);
+  return NextResponse.json(data, { status: apiRes.status });
+}

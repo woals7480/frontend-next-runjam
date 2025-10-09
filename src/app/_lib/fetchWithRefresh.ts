@@ -1,5 +1,3 @@
-// lib/fetchWithRefresh.ts
-const API_BASE = process.env.NEXT_PUBLIC_API_URL!;
 let refreshPromise: Promise<Response> | null = null;
 
 class UnauthorizedError extends Error {
@@ -9,10 +7,12 @@ class UnauthorizedError extends Error {
   }
 }
 
+// ✅ 프록시 라우트로 리프레시 (동일 오리진)
 async function callRefresh() {
-  return fetch(`${API_BASE}/auth/refresh`, {
+  return fetch("/api/auth/refresh", {
     method: "POST",
-    credentials: "include",
+    cache: "no-store", // 캐시 방지
+    // 동일 오리진이므로 credentials 지정 불필요
   });
 }
 
@@ -23,7 +23,7 @@ export async function fetchWithRefresh(
   _retry = false
 ): Promise<Response> {
   const res = await fetch(input, {
-    credentials: "include",
+    // 동일 오리진 프록시(/api/...)를 기준으로 간다 → credentials 불필요
     ...init,
   });
 
@@ -35,7 +35,7 @@ export async function fetchWithRefresh(
 
   // refresh 자신 호출 중 401이면 중단
   const urlStr = typeof input === "string" ? input : input.toString();
-  if (urlStr.includes("/auth/refresh")) throw new UnauthorizedError();
+  if (urlStr.includes("/api/auth/refresh")) throw new UnauthorizedError();
 
   // 동시 401 → refresh 1회만
   if (!refreshPromise) {
