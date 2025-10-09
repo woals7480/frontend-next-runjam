@@ -22,9 +22,11 @@ export async function middleware(req: NextRequest) {
   const access = req.cookies.get(accessCookieName)?.value ?? null;
   const refresh = req.cookies.get(refreshCookieName)?.value ?? null;
 
+  console.log(req.cookies.get(accessCookieName));
+  console.log(req.cookies.get(refreshCookieName));
   console.log(access, "#");
   console.log(refresh, "$");
-  console.log(isProd, "%");
+  console.log(process.env.NODE_ENV, "%");
   // RT 없으면 로그인
   if (!refresh) {
     const login = new URL("/login", url);
