@@ -4,9 +4,10 @@ import { makeBackendUrl, forwardHeaders, passthroughJson } from "../_lib";
 
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
-  const url = makeBackendUrl(`/run/${params.id}`, req);
+  const { id } = context.params;
+  const url = makeBackendUrl(`/run/${id}`, req);
   const body = await req.text();
   const apiRes = await fetch(url, {
     method: "PATCH",
@@ -21,9 +22,10 @@ export async function PATCH(
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
-  const url = makeBackendUrl(`/run/${params.id}`, req);
+  const { id } = context.params;
+  const url = makeBackendUrl(`/run/${id}`, req);
   const apiRes = await fetch(url, {
     method: "DELETE",
     headers: forwardHeaders(req),
