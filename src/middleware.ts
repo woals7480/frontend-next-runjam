@@ -10,7 +10,8 @@ export async function middleware(req: NextRequest) {
     process.env.COOKIE_NAME_AT ?? process.env.NEXT_PUBLIC_COOKIE_NAME_AT;
   const refreshCookieName =
     process.env.COOKIE_NAME_RT ?? process.env.NEXT_PUBLIC_COOKIE_NAME_RT;
-
+  console.log(accessCookieName, "!");
+  console.log(refreshCookieName, "@");
   // env 미설정 → 로그인
   if (!(accessCookieName && refreshCookieName)) {
     const login = new URL("/login", url);
@@ -21,6 +22,9 @@ export async function middleware(req: NextRequest) {
   const access = req.cookies.get(accessCookieName)?.value ?? null;
   const refresh = req.cookies.get(refreshCookieName)?.value ?? null;
 
+  console.log(access, "#");
+  console.log(refresh, "$");
+  console.log(isProd, "%");
   // RT 없으면 로그인
   if (!refresh) {
     const login = new URL("/login", url);
