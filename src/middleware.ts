@@ -10,8 +10,6 @@ export async function middleware(req: NextRequest) {
     process.env.COOKIE_NAME_AT ?? process.env.NEXT_PUBLIC_COOKIE_NAME_AT;
   const refreshCookieName =
     process.env.COOKIE_NAME_RT ?? process.env.NEXT_PUBLIC_COOKIE_NAME_RT;
-  console.log(accessCookieName, "!");
-  console.log(refreshCookieName, "@");
   // env 미설정 → 로그인
   if (!(accessCookieName && refreshCookieName)) {
     const login = new URL("/login", url);
@@ -21,12 +19,10 @@ export async function middleware(req: NextRequest) {
 
   const access = req.cookies.get(accessCookieName)?.value ?? null;
   const refresh = req.cookies.get(refreshCookieName)?.value ?? null;
+  console.log(req.cookies);
+  console.log("access", access);
+  console.log("refresh", refresh);
 
-  console.log(req.cookies.get(accessCookieName));
-  console.log(req.cookies.get(refreshCookieName));
-  console.log(access, "#");
-  console.log(refresh, "$");
-  console.log(process.env.NODE_ENV, "%");
   // RT 없으면 로그인
   if (!refresh) {
     const login = new URL("/login", url);
@@ -39,7 +35,6 @@ export async function middleware(req: NextRequest) {
     try {
       const { accessToken } = await getAccessToken(refresh, refreshCookieName);
       const res = NextResponse.next();
-      const cookieDomain = process.env.COOKIE_DOMAIN || undefined;
 
       res.cookies.set(accessCookieName, accessToken, {
         path: "/",
@@ -47,7 +42,6 @@ export async function middleware(req: NextRequest) {
         sameSite: isProd ? "none" : "lax",
         secure: isProd,
         maxAge: 15 * 60,
-        domain: cookieDomain,
       });
       return res;
     } catch (e) {
