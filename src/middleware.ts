@@ -1,9 +1,8 @@
 // middleware.ts
-import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function middleware(req: NextRequest) {
-  const cookieStore = await cookies();
+  const cookie = req.cookies;
   const url = req.nextUrl;
   if (req.method === "OPTIONS") return NextResponse.next();
 
@@ -19,8 +18,9 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(login);
   }
 
-  const access = cookieStore.get(accessCookieName)?.value ?? null;
-  const refresh = cookieStore.get(refreshCookieName)?.value ?? null;
+  const access = cookie.get(accessCookieName)?.value ?? null;
+  const refresh = cookie.get(refreshCookieName)?.value ?? null;
+  console.log(cookie);
   console.log(access);
   console.log(refresh);
 
