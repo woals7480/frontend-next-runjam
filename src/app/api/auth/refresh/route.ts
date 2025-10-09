@@ -36,5 +36,6 @@ export async function POST(req: NextRequest) {
     ...cookieOptions(isProd),
     maxAge: 15 * 60,
   });
+
   return res;
 }

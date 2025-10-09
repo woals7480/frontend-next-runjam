@@ -1,20 +1,26 @@
 // app/api/shoes/mileages/[mileageId]/route.ts
-import {
-  makeBackendUrl,
-  forwardHeaders,
-  passthroughJson,
-} from "@/app/api/run/_lib";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+
+const API = process.env.NEXT_PUBLIC_API_URL!;
+const AT = process.env.COOKIE_NAME_AT!;
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { mileageId: string } }
+  { params }: { params: Promise<{ mileageId: string }> }
 ) {
-  const url = makeBackendUrl(`/shoes/mileages/${params.mileageId}`, req);
+  const at = req.cookies.get(AT)?.value;
+  if (!at) {
+    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+  }
+  const { mileageId } = await params;
+  const url = `${API}/shoes/mileages/${mileageId}`;
+
   const apiRes = await fetch(url, {
     method: "POST",
-    headers: forwardHeaders(req),
+    headers: { Cookie: `${AT}=${encodeURIComponent(at)}` },
     cache: "no-store",
   });
-  return passthroughJson(apiRes);
+
+  const data = await apiRes.json().catch(() => null);
+  return NextResponse.json(data, { status: apiRes.status });
 }

@@ -1,37 +1,52 @@
 // app/api/run/[id]/route.ts
-import { NextRequest } from "next/server";
-import { makeBackendUrl, forwardHeaders, passthroughJson } from "../_lib";
+import { NextRequest, NextResponse } from "next/server";
+
+const API = process.env.NEXT_PUBLIC_API_URL!;
+const AT = process.env.COOKIE_NAME_AT!;
 
 export async function PATCH(
   req: NextRequest,
-  context: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const { id } = context.params;
-  const url = makeBackendUrl(`/run/${id}`, req);
+  const at = req.cookies.get(AT)?.value;
+  if (!at) {
+    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+  }
+  const { id } = await params;
+  const url = `${API}/run/${id}`;
   const body = await req.text();
   const apiRes = await fetch(url, {
     method: "PATCH",
     headers: {
-      ...forwardHeaders(req, { "content-type": "application/json" }),
+      Cookie: `${AT}=${encodeURIComponent(at)}`,
+      "content-type": "application/json",
     },
     body,
     cache: "no-store",
   });
-  return passthroughJson(apiRes);
+
+  const data = await apiRes.json().catch(() => null);
+  return NextResponse.json(data, { status: apiRes.status });
 }
 
 export async function DELETE(
   req: NextRequest,
-  context: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const { id } = context.params;
-  const url = makeBackendUrl(`/run/${id}`, req);
+  const at = req.cookies.get(AT)?.value;
+  if (!at) {
+    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+  }
+  const { id } = await params;
+  const url = `${API}/run/${id}`;
   const apiRes = await fetch(url, {
     method: "DELETE",
-    headers: forwardHeaders(req),
+    headers: { Cookie: `${AT}=${encodeURIComponent(at)}` },
     cache: "no-store",
   });
-  return passthroughJson(apiRes);
+
+  const data = await apiRes.json().catch(() => null);
+  return NextResponse.json(data, { status: apiRes.status });
 }
 
 // (선택) 상세 조회가 필요하면 주석 해제
