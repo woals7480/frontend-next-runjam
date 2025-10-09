@@ -20,8 +20,6 @@ export async function middleware(req: NextRequest) {
 
   const access = cookie.get(accessCookieName)?.value ?? null;
   const refresh = cookie.get(refreshCookieName)?.value ?? null;
-  console.log(access);
-  console.log(refresh);
 
   // RT 없으면 로그인
   if (!refresh) {
