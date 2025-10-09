@@ -1,6 +1,5 @@
 import { appRoot } from "@/app/_styles/tokens.css";
 import RQProvider from "@/app/_components/RQProvider";
-import AuthSync from "@/app/_components/AuthSync";
 import "./global.css.ts";
 import { pretendard } from "@/font/font";
 import clsx from "clsx";
@@ -18,10 +17,7 @@ export default function RootLayout({
         <ModalSetup />
         <Toaster position="bottom-center" />
         <RQProvider>
-          <div id="app-root">
-            {/* <AuthSync /> */}
-            {children}
-          </div>
+          <div id="app-root">{children}</div>
         </RQProvider>
       </body>
     </html>
