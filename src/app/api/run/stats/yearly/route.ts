@@ -1,11 +1,10 @@
 // app/api/run/stats/monthly/route.ts
 import { NextRequest, NextResponse } from "next/server";
 
-const API = process.env.NEXT_PUBLIC_API_URL!;
-const AT = process.env.COOKIE_NAME_AT!;
-const url = `${API}/run/stats/yearly`;
-
 export async function GET(req: NextRequest) {
+  const API = process.env.NEXT_PUBLIC_API_URL!;
+  const AT = process.env.COOKIE_NAME_AT!;
+  const url = `${API}/run/stats/yearly`;
   const at = req.cookies.get(AT)?.value;
   if (!at) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
