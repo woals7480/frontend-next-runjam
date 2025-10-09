@@ -14,6 +14,7 @@ export async function GET(req: NextRequest) {
     method: "GET",
     headers: { Cookie: `${AT}=${encodeURIComponent(at)}` },
     cache: "no-store",
+    credentials: "include",
   });
 
   const data = await apiRes.json().catch(() => null);
