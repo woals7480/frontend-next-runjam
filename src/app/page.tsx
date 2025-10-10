@@ -16,6 +16,7 @@ export default function Home() {
     queryKey: ["auth", "me"],
     queryFn: getUserMe,
     retry: false,
+    refetchOnWindowFocus: false,
   });
 
   const onLogout = async () => {

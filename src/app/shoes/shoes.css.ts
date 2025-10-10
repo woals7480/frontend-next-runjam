@@ -1,10 +1,17 @@
 // src/app/shoes/ShoesPage.css.ts
 import { style } from "@vanilla-extract/css";
+import {
+  colorBg,
+  colorFg,
+  colorBorder,
+  colorPrimary,
+} from "@/app/_styles/tokens.css";
 
 export const page = style({
   maxWidth: 720,
   margin: "0 auto",
   padding: "16px 20px 40px",
+  color: colorFg,
 });
 
 export const header = style({
@@ -12,11 +19,13 @@ export const header = style({
   alignItems: "center",
   justifyContent: "space-between",
   padding: "8px 0 16px",
+  color: colorFg,
 });
 
 export const title = style({
   fontSize: 20,
   fontWeight: 700,
+  color: colorFg,
 });
 
 export const addBtn = style({
@@ -26,13 +35,15 @@ export const addBtn = style({
   display: "grid",
   placeItems: "center",
   cursor: "pointer",
-  background: "white",
+  background: "inherit",
+  color: colorFg,
 });
 
 export const list = style({
   display: "grid",
   gap: 16,
   cursor: "pointer",
+  color: colorFg,
 });
 
 export const centerBox = style({
@@ -41,10 +52,11 @@ export const centerBox = style({
   placeItems: "center",
   textAlign: "center",
   gap: 12,
-  color: "inherit",
+  color: colorFg,
 });
 
 export const helperText = style({
   fontSize: 14,
   opacity: 0.8,
+  color: colorFg,
 });

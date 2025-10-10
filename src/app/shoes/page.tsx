@@ -58,7 +58,13 @@ export default function ShoesPage() {
         </div>
       )}
 
-      {data && (
+      {data && data.length === 0 && (
+        <div className={s.centerBox}>
+          <p>아직 신발이 없어요. 첫 신발을 등록해보세요!</p>
+        </div>
+      )}
+
+      {data && data.length > 0 && (
         <section className={s.list}>
           {data.map((sh) => (
             <ShoeCard key={sh.id} shoe={sh} />

@@ -1,5 +1,6 @@
 import { style } from "@vanilla-extract/css";
 import {
+  colorBg,
   colorBorder,
   colorFg,
   colorPrimary,
@@ -11,7 +12,14 @@ export const card = style({
   borderRadius: 12,
   padding: 16,
   boxShadow: "0 6px 16px rgba(0,0,0,0.06)",
-  background: "#fff",
+  background: colorBg,
+
+  "@media": {
+    // 다크에서 그림자 대비 과한 느낌 완화
+    "(prefers-color-scheme: dark)": {
+      boxShadow: "0 8px 24px rgba(0,0,0,0.6)",
+    },
+  },
 });
 
 export const h1 = style({
@@ -33,11 +41,24 @@ export const input = style({
   border: `1px solid ${colorBorder}`,
   borderRadius: 10,
   fontSize: 14,
+  background: colorBg,
+  color: colorFg,
   selectors: {
+    "&::placeholder": { opacity: 0.7 },
     "&:focus": {
       outline: "none",
       borderColor: colorPrimary,
       boxShadow: `0 0 0 3px rgba(37,99,235,0.2)`,
+    },
+  },
+  "@media": {
+    // 다크에서 포커스 링 살짝 강화
+    "(prefers-color-scheme: dark)": {
+      selectors: {
+        "&:focus": {
+          boxShadow: `0 0 0 3px rgba(37,99,235,0.35)`,
+        },
+      },
     },
   },
 });
@@ -56,7 +77,9 @@ export const btn = style({
   color: "#fff",
   fontWeight: 600,
   cursor: "pointer",
-  selectors: { "&:disabled": { opacity: 0.6, cursor: "not-allowed" } },
+  selectors: {
+    "&:disabled": { opacity: 0.6, cursor: "not-allowed" },
+  },
 });
 
 export const linkBtn = style({
@@ -65,4 +88,8 @@ export const linkBtn = style({
   color: colorFg,
 });
 
-export const page = style({ maxWidth: 720, margin: "20px auto", padding: 16 });
+export const page = style({
+  maxWidth: 720,
+  margin: "20px auto",
+  padding: 16,
+});

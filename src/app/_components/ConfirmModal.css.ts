@@ -1,11 +1,21 @@
 // src/app/_components/ConfirmModal.css.ts
 import { style } from "@vanilla-extract/css";
+import {
+  modalOverlayBg,
+  modalBg,
+  modalTextMuted,
+  modalBtnBg,
+  modalBtnBorder,
+  modalBtnFg,
+  modalBtnPrimaryBg,
+  modalBtnPrimaryFg,
+} from "@/app/_styles/tokens.css";
 
 /** react-modal overlay */
 export const overlay = style({
   position: "fixed",
   inset: 0,
-  background: "rgba(0,0,0,.45)",
+  background: modalOverlayBg, // ✅ 토큰
   display: "grid",
   placeItems: "center",
   padding: 16,
@@ -17,15 +27,15 @@ export const content = style({
   outline: "none",
   border: "none",
   borderRadius: 16,
-  background: "#fff",
-  boxShadow: "0 10px 30px rgba(0,0,0,.20)",
+  background: modalBg, // ✅ 토큰
+  boxShadow: "0 10px 30px rgba(0,0,0,.20)", // 그림자는 색상 토큰 아님(요청사항 유지)
   minWidth: 300,
   maxWidth: 560,
   width: "100%",
   overflow: "hidden",
   "@media": {
     "(prefers-color-scheme: dark)": {
-      background: "rgba(28,28,28,.98)",
+      // 다크에선 요청하신 대로 더 깊은 그림자 유지
       boxShadow: "0 10px 30px rgba(0,0,0,.55)",
     },
   },
@@ -48,10 +58,7 @@ export const title = style({
 export const description = style({
   marginTop: 12,
   lineHeight: 1.6,
-  color: "#4b5563",
-  "@media": {
-    "(prefers-color-scheme: dark)": { color: "#9ca3af" },
-  },
+  color: modalTextMuted, // ✅ 토큰
 });
 
 /** 하단 버튼 영역 */
@@ -65,39 +72,18 @@ export const actions = style({
 /** 버튼 공통 */
 export const btn = style({
   appearance: "none",
-  border: "1px solid #e5e7eb",
-  background: "#fff",
-  color: "#111827",
+  border: `1px solid ${modalBtnBorder}`, // ✅ 토큰
+  background: modalBtnBg, // ✅ 토큰
+  color: modalBtnFg, // ✅ 토큰
   borderRadius: 10,
   padding: "8px 14px",
   fontSize: 14,
   cursor: "pointer",
-  "@media": {
-    "(prefers-color-scheme: dark)": {
-      background: "#27272a",
-      border: "1px solid #3f3f46",
-      color: "#e5e7eb",
-      selectors: {
-        "&:hover": { background: "#313135" },
-        "&:active": { background: "#2a2a2e" },
-      },
-    },
-  },
 });
 
 /** 주요(확인/삭제) 버튼 */
 export const btnPrimary = style({
   border: "none",
-  background: "#111827",
-  color: "#fff",
-  selectors: {
-    "&:hover": { filter: "brightness(1.05)" },
-    "&:active": { filter: "brightness(0.95)" },
-  },
-  "@media": {
-    "(prefers-color-scheme: dark)": {
-      background: "#e5e7eb",
-      color: "#111827",
-    },
-  },
+  background: modalBtnPrimaryBg, // ✅ 토큰
+  color: modalBtnPrimaryFg, // ✅ 토큰
 });

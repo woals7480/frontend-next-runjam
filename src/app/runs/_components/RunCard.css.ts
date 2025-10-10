@@ -1,19 +1,30 @@
 import { style } from "@vanilla-extract/css";
+import {
+  colorBg,
+  colorBorder,
+  colorFg,
+  colorPrimary,
+} from "@/app/_styles/tokens.css";
 
 const radius = "16px";
 
+// 살짝 투명한 서피스(글래스 느낌)
+const glassBg = `color-mix(in srgb, ${colorBg} 92%, transparent)`;
+const softBg = `color-mix(in srgb, ${colorBg} 92%, transparent)`; // modal 등에도 재사용
+const mutedText = `color-mix(in srgb, ${colorFg} 65%, transparent)`; // 보조 텍스트
+const hoverBg = "color-mix(in srgb, currentColor 8%, transparent)"; // 공통 hover
+
 export const card = style({
   borderRadius: radius,
-  background: "rgba(255,255,255,0.92)",
-  border: "1px solid #e5e7eb",
+  background: glassBg,
+  border: `1px solid ${colorBorder}`,
   boxShadow: "0 4px 18px rgba(0,0,0,0.06)",
   overflow: "hidden",
   backdropFilter: "saturate(120%) blur(8px)",
   WebkitBackdropFilter: "saturate(120%) blur(8px)",
   "@media": {
     "(prefers-color-scheme: dark)": {
-      background: "rgba(17,24,39,0.65)",
-      border: "1px solid #374151",
+      // 다크에선 그림자만 조금 깊게
       boxShadow: "0 6px 22px rgba(0,0,0,0.4)",
     },
   },
@@ -21,11 +32,13 @@ export const card = style({
 
 export const inner = style({
   padding: "16px",
+  color: colorFg,
 });
 
 export const headRow = style({
   display: "flex",
   justifyContent: "space-between",
+  color: colorFg,
 });
 
 export const headRowLeft = style({
@@ -41,16 +54,19 @@ export const headRowRight = style({
 
 export const dots = style({
   cursor: "pointer",
+  color: colorFg,
 });
 
 export const thumb = style({
   width: 64,
   height: 64,
   borderRadius: "12px",
-  background: "#f3f4f6",
+  background: `color-mix(in srgb, ${colorBg} 75%, transparent)`,
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
+  border: `1px solid ${colorBorder}`,
+  color: colorFg,
 });
 
 export const title = style({
@@ -58,12 +74,13 @@ export const title = style({
   fontWeight: 700,
   lineHeight: 1.15,
   margin: 0,
+  color: colorFg,
 });
 
 export const subtitle = style({
   marginTop: "4px",
   fontSize: "13px",
-  color: "#6b7280",
+  color: mutedText,
 });
 
 export const metrics = style({
@@ -71,6 +88,7 @@ export const metrics = style({
   gridTemplateColumns: "1fr 1fr 1fr",
   gap: "8px",
   marginTop: "14px",
+  color: colorFg,
 });
 
 export const metric = style({
@@ -83,11 +101,12 @@ export const value = style({
   fontSize: "24px",
   fontWeight: 800,
   letterSpacing: "-0.2px",
+  color: colorFg,
 });
 
 export const label = style({
   fontSize: "12px",
-  color: "#6b7280",
+  color: mutedText,
 });
 
 export const menu = style({
@@ -97,20 +116,15 @@ export const menu = style({
   minWidth: 140,
   padding: 6,
   borderRadius: 12,
-  background: "#ffffff",
-  border: "1px solid #e5e7eb",
+  background: softBg,
+  border: `1px solid ${colorBorder}`,
   boxShadow: "0 10px 30px rgba(0,0,0,.12)",
   opacity: 0,
   transform: "translateY(-4px)",
   pointerEvents: "none",
   transition: "opacity .15s ease, transform .15s ease",
   zIndex: 20,
-  "@media": {
-    "(prefers-color-scheme: dark)": {
-      background: "rgba(17,24,39,0.95)",
-      border: "1px solid #374151",
-    },
-  },
+  color: colorFg,
 });
 
 export const menuOpen = style({
@@ -128,29 +142,26 @@ export const item = style({
   borderRadius: 8,
   fontSize: 14,
   lineHeight: 1.1,
-  color: "#111827",
+  color: colorFg,
   background: "transparent",
   border: "none",
   cursor: "pointer",
   textAlign: "left",
   selectors: {
-    "&:hover": { background: "#f3f4f6" },
-    "&:focus-visible": { outline: "2px solid #60a5fa", outlineOffset: 2 },
-  },
-  "@media": {
-    "(prefers-color-scheme: dark)": {
-      color: "#e5e7eb",
-      selectors: { "&:hover": { background: "rgba(255,255,255,0.10)" } },
+    "&:hover": { background: hoverBg },
+    "&:focus-visible": {
+      outline: `2px solid ${colorPrimary}`,
+      outlineOffset: 2,
     },
   },
 });
 
-export const itemIcon = style({ width: 16, height: 16 });
+export const itemIcon = style({ width: 16, height: 16, color: colorFg });
 
 export const modalOverlay = style({
   inset: 0,
   position: "fixed",
-  background: "rgba(0,0,0,.45)",
+  background: "rgba(0,0,0,.45)", // 오버레이는 토큰 영향 안 받는 게 자연스러움
 });
 
 export const modalContent = style({
@@ -161,15 +172,17 @@ export const modalContent = style({
   borderRadius: "8px",
   overflow: "hidden",
   outline: "none",
-  background: "white",
+  background: colorBg,
   minWidth: "400px",
   boxShadow: "0 10px 30px rgba(0,0,0,.2)",
   padding: "16px",
+  border: `1px solid ${colorBorder}`,
+  color: colorFg,
 });
 
 export const divider = style({
   height: 1,
-  background: "rgba(0,0,0,0.08)",
+  background: `color-mix(in srgb, ${colorBorder} 100%, transparent)`,
   margin: "0 16px",
 });
 
@@ -178,9 +191,15 @@ export const shoeWrap = style({
   padding: "16px",
   display: "flex",
   alignItems: "center",
+  borderRadius: 10,
+  selectors: {
+    "&:hover": { background: hoverBg },
+  },
+  color: colorFg,
 });
 
 export const shoeName = style({
   fontSize: "18px",
   marginLeft: "12px",
+  color: colorFg,
 });

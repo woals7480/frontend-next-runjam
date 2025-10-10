@@ -1,17 +1,20 @@
 import { style } from "@vanilla-extract/css";
-
-const borderLight = "rgba(0,0,0,.08)";
-const borderSoft = "rgba(0,0,0,.06)";
+import { colorBg, colorBorder, colorFg } from "@/app/_styles/tokens.css";
 
 export const wrap = style({
-  border: `1px solid ${borderLight}`,
+  border: `1px solid ${colorBorder}`,
   borderRadius: 16,
   boxShadow: "0 4px 16px rgba(0,0,0,.06)",
   padding: 12,
-  // 둥근 모서리 밖으로 내용이 넘어가지 않게
   overflow: "hidden",
-  background: "rgba(255,255,255,.7)",
-  backdropFilter: "blur(8px)",
+  background: colorBg,
+  color: colorFg,
+
+  "@media": {
+    "(prefers-color-scheme: dark)": {
+      boxShadow: "0 8px 24px rgba(0,0,0,.5)",
+    },
+  },
 });
 
 export const header = style({
@@ -20,41 +23,32 @@ export const header = style({
   alignItems: "center",
   marginBottom: 8,
   fontSize: 14,
+  color: colorFg,
   opacity: 0.85,
-  // (옵션) 세로 스크롤이 생기는 레이아웃에서도 상단 고정시키고 싶다면 주석 해제
-  // position: "sticky",
-  // top: 0,
-  // background: "inherit",
-  // paddingBottom: 8,
-  // zIndex: 1,
 });
 
-/** ⬇️ 카드 전용 스크롤 컨테이너 */
 export const scroller = style({
   overflowX: "auto",
   overflowY: "hidden",
   scrollSnapType: "x mandatory",
-  padding: "0 8px 4px", // 좌우·하단 여백 (테두리에 딱 붙지 않게)
+  padding: "0 8px 4px",
   msOverflowStyle: "none",
   scrollbarWidth: "thin",
   selectors: {
     "&::-webkit-scrollbar": { height: 6 },
     "&::-webkit-scrollbar-thumb": {
-      background: "rgba(0,0,0,.2)",
+      background: colorBorder,
       borderRadius: 4,
     },
   },
 });
 
-/** 실제 카드 그리드 */
 export const grid = style({
   display: "grid",
   gap: 8,
-  // 모바일: 가로 스크롤 + 고정폭 카드
   gridTemplateColumns: "repeat(7, 112px)",
   "@media": {
     "(min-width: 768px)": {
-      // 태블릿 이상: 7등분로 꽉 차게
       gridTemplateColumns: "repeat(7, minmax(112px, 1fr))",
     },
   },
@@ -67,10 +61,11 @@ export const day = style({
   justifyItems: "center",
   alignContent: "start",
   gap: 6,
-  border: `1px solid ${borderSoft}`,
+  border: `1px solid ${colorBorder}`,
   background: "transparent",
   minWidth: 112,
   scrollSnapAlign: "start",
+  color: colorFg,
 });
 
 export const icon = style({
@@ -79,12 +74,25 @@ export const icon = style({
   display: "grid",
   placeItems: "center",
   fontSize: 34,
+  color: colorFg,
 });
-export const dow = style({ fontSize: 13, opacity: 0.85 });
-export const temp = style({ fontSize: 16, fontWeight: 700 });
+
+export const dow = style({
+  fontSize: 13,
+  opacity: 0.85,
+  color: colorFg,
+});
+
+export const temp = style({
+  fontSize: 16,
+  fontWeight: 700,
+  color: colorFg,
+});
+
 export const sub = style({
   fontSize: 12,
   opacity: 0.9,
   textAlign: "center",
   lineHeight: 1.3,
+  color: colorFg,
 });

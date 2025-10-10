@@ -1,10 +1,19 @@
 // src/app/shoes/[id]/ShoeDetail.css.ts
 import { style } from "@vanilla-extract/css";
+import {
+  colorBg,
+  colorFg,
+  colorBorder,
+  colorPrimary,
+  modalOverlayBg,
+  modalBg,
+} from "@/app/_styles/tokens.css";
 
 export const page = style({
   maxWidth: 720,
   margin: "0 auto",
   paddingBottom: 32,
+  color: colorFg,
 });
 
 export const header = style({
@@ -12,18 +21,24 @@ export const header = style({
   gridTemplateColumns: "40px 1fr 40px",
   alignItems: "center",
   padding: "12px 16px",
+  color: colorFg,
 });
 
 export const title = style({
   textAlign: "center",
   fontSize: 18,
   fontWeight: 700,
+  color: colorFg,
 });
 
 export const hero = style({
   textAlign: "center",
   padding: "24px 16px 8px",
-  background: "linear-gradient(180deg, rgba(0,0,0,0.02), rgba(0,0,0,0) 60%)",
+  background: `linear-gradient(
+    180deg,
+    color-mix(in srgb, ${colorFg} 8%, transparent),
+    transparent 60%
+  )`,
 });
 
 export const kmNum = style({
@@ -31,6 +46,7 @@ export const kmNum = style({
   fontWeight: 900,
   letterSpacing: -2,
   lineHeight: 0.9,
+  color: colorFg,
 });
 
 export const kmUnit = style({
@@ -38,6 +54,7 @@ export const kmUnit = style({
   marginTop: 8,
   fontSize: 36,
   fontWeight: 900,
+  color: colorFg,
 });
 
 export const shoeGhost = style({
@@ -48,8 +65,9 @@ export const shoeGhost = style({
 });
 
 export const section = style({
-  background: "#fff",
+  background: colorBg,
   padding: "20px 16px",
+  color: colorFg,
 });
 
 export const card = style({
@@ -57,20 +75,22 @@ export const card = style({
   gridTemplateColumns: "1fr 1fr 1fr",
   textAlign: "center",
   rowGap: 8,
+  color: colorFg,
 });
 
 export const statNum = style({
   fontSize: 22,
   fontWeight: 800,
+  color: colorFg,
 });
 
 export const statLabel = style({
-  color: "rgba(0,0,0,0.45)",
+  color: `color-mix(in srgb, ${colorFg} 55%, transparent)`,
 });
 
 export const divider = style({
   height: 1,
-  background: "rgba(0,0,0,0.08)",
+  background: colorBorder,
   margin: "16px 0",
 });
 
@@ -80,12 +100,13 @@ export const centerBox = style({
   placeItems: "center",
   textAlign: "center",
   gap: 12,
-  color: "inherit",
+  color: colorFg,
 });
 
 export const helperText = style({
   fontSize: 14,
   opacity: 0.8,
+  color: colorFg,
 });
 
 export const menuWrapper = style({
@@ -99,20 +120,14 @@ export const menu = style({
   minWidth: 140,
   padding: 6,
   borderRadius: 12,
-  background: "#ffffff",
-  border: "1px solid #e5e7eb",
+  background: colorBg,
+  border: `1px solid ${colorBorder}`,
   boxShadow: "0 10px 30px rgba(0,0,0,.12)",
   opacity: 0,
   transform: "translateY(-4px)",
   pointerEvents: "none",
   transition: "opacity .15s ease, transform .15s ease",
   zIndex: 20,
-  "@media": {
-    "(prefers-color-scheme: dark)": {
-      background: "rgba(17,24,39,0.95)",
-      border: "1px solid #374151",
-    },
-  },
 });
 
 export const menuOpen = style({
@@ -130,19 +145,18 @@ export const item = style({
   borderRadius: 8,
   fontSize: 14,
   lineHeight: 1.1,
-  color: "#111827",
+  color: colorFg,
   background: "transparent",
   border: "none",
   cursor: "pointer",
   textAlign: "left",
   selectors: {
-    "&:hover": { background: "#f3f4f6" },
-    "&:focus-visible": { outline: "2px solid #60a5fa", outlineOffset: 2 },
-  },
-  "@media": {
-    "(prefers-color-scheme: dark)": {
-      color: "#e5e7eb",
-      selectors: { "&:hover": { background: "rgba(255,255,255,0.10)" } },
+    "&:hover": {
+      background: "color-mix(in srgb, currentColor 8%, transparent)",
+    },
+    "&:focus-visible": {
+      outline: `2px solid ${colorPrimary}`,
+      outlineOffset: 2,
     },
   },
 });
@@ -150,7 +164,7 @@ export const item = style({
 export const modalOverlay = style({
   inset: 0,
   position: "fixed",
-  background: "rgba(0,0,0,.45)",
+  background: modalOverlayBg, // 토큰
 });
 
 export const modalContent = style({
@@ -161,8 +175,10 @@ export const modalContent = style({
   borderRadius: "8px",
   overflow: "hidden",
   outline: "none",
-  background: "white",
+  background: modalBg, // 토큰
   minWidth: "400px",
   boxShadow: "0 10px 30px rgba(0,0,0,.2)",
   padding: "16px",
+  border: `1px solid ${colorBorder}`,
+  color: colorFg,
 });

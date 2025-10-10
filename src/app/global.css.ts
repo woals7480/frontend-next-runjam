@@ -3,8 +3,8 @@ import { createGlobalTheme, globalStyle } from "@vanilla-extract/css";
 
 // CSS 변수 선언(기본값)
 export const vars = createGlobalTheme(":root", {
-  background: "#ffffff",
-  foreground: "#171717",
+  background: "#f9fafb",
+  foreground: "#111827",
 });
 
 // 다크 모드에서 변수 값만 오버라이드
@@ -12,8 +12,8 @@ globalStyle(":root", {
   "@media": {
     "(prefers-color-scheme: dark)": {
       vars: {
-        [vars.background]: "#0a0a0a",
-        [vars.foreground]: "#ededed",
+        [vars.background]: "#202227ff",
+        [vars.foreground]: "rgba(255,255,255,0.95)",
       },
     },
   },
@@ -26,6 +26,9 @@ globalStyle("html, body", {
   letterSpacing: "0.005em",
   maxWidth: "100vw",
   overflowX: "hidden",
+  background: vars.background,
+  color: vars.foreground,
+  transition: "background-color 160ms ease, color 160ms ease",
 });
 
 // body 전역 규칙

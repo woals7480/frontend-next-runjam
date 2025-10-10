@@ -179,15 +179,6 @@ export default function RunsPage() {
       {status === "success" && runs.length === 0 && (
         <div className={s.centerBox}>
           <p>아직 기록이 없어요. 첫 달리기를 추가해보세요!</p>
-          <button
-            className={s.plusBtn}
-            onClick={() => {
-              setMode("create");
-              setIsOpen(true);
-            }}
-          >
-            추가
-          </button>
         </div>
       )}
 

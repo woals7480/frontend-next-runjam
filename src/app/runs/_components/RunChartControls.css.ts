@@ -1,4 +1,5 @@
 import { style } from "@vanilla-extract/css";
+import { colorBg, colorBorder } from "@/app/_styles/tokens.css";
 
 export const controls = style({
   display: "flex",
@@ -9,19 +10,19 @@ export const controls = style({
 
 export const select = style({
   appearance: "none",
-  border: "1px solid #e5e7eb",
+  border: `1px solid ${colorBorder}`,
   padding: "8px 10px",
   borderRadius: 10,
-  background: "#fff",
+  background: colorBg,
   fontSize: 14,
   cursor: "pointer",
 });
 
 export const input = style({
-  border: "1px solid #e5e7eb",
+  border: `1px solid ${colorBorder}`,
   padding: "8px 10px",
   borderRadius: 10,
-  background: "#fff",
+  background: colorBg,
   fontSize: 14,
   cursor: "pointer",
 });

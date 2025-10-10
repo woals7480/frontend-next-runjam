@@ -6,7 +6,6 @@ export async function GET(req: NextRequest) {
   const AT = process.env.COOKIE_NAME_AT!;
   const url = `${API}/run/stats/monthly`;
   const at = req.cookies.get(AT)?.value;
-  console.log(at);
   if (!at) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
