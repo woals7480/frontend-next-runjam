@@ -3,7 +3,6 @@ import { useRouter } from "next/navigation";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import * as ui from "@/app/_styles/ui.css";
 import { getUserMe } from "./(auth)/login/_lib/getUserMe";
-import { useAuthStore } from "@/store/auth";
 import RunCharts from "./runs/_components/RunCharts";
 import { postLogout } from "./(auth)/login/_lib/postLogout";
 import WeeklyForecast from "./_components/WeeklyForecast";
@@ -11,8 +10,7 @@ import WeeklyForecast from "./_components/WeeklyForecast";
 export default function Home() {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const authStore = useAuthStore();
-  const { data } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ["auth", "me"],
     queryFn: getUserMe,
     retry: false,
@@ -30,7 +28,13 @@ export default function Home() {
       <main className={ui.page}>
         <div className={ui.card}>
           <h1 className={ui.h1}>RunJam</h1>
-          {data ? (
+          {isLoading ? (
+            <>
+              <p>
+                <strong>내 정보 불러오는 중...</strong>
+              </p>
+            </>
+          ) : data ? (
             <>
               <p>
                 <strong>환영합니다</strong> {data.nickname}
