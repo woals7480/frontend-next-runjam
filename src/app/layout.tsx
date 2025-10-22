@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "RunJam",
     description: "러너들의 기록 플랫폼",
-    url: "https://runjam.vercel.app",
+    url: process.env.NEXT_PUBLIC_BASE_URL,
     siteName: "RunJam",
     images: [
       {
@@ -28,7 +28,10 @@ export const metadata: Metadata = {
     type: "website",
   },
   icons: {
-    icon: "/icons/logo-mark-runjam.png",
+    icon: [
+      { url: "/icons/logo-mark-runjam.png", type: "image/png", sizes: "any" },
+    ],
+    apple: [{ url: "/icons/logo-mark-runjam.png" }],
   },
 };
 
